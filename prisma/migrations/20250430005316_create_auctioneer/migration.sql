@@ -16,3 +16,6 @@ CREATE TABLE "Auctioneer" (
 
     CONSTRAINT "Auctioneer_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Auctioneer_email_key" ON "Auctioneer"("email");
