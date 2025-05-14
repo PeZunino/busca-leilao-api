@@ -7,19 +7,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Auctioneer {
+  @@map("auctioneer")
+  id                String               @id @default(uuid())
+  number            String
+  cep               String
+  neighborhood      String
+  city              String
+  name              String
+  registrationCode  String
+  phone             String
+  email             String              @unique
+  street            String
+  createdAt         DateTime            @default(now()) @map("created_at")
+  updatedAt         DateTime?           @updatedAt @map("updated_at")
 
-model Auctioneer{
-  id String @id @default(uuid())
-	number String
-	cep String
-	neighborhood String
-	city String
-	name String
-	registrationCode String
-	phone String
-	email String @unique
-	website String
-  street String
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime? @updatedAt @map("updated_at")
+  websites          AuctioneerWebsite[]
+}
+
+model Website {
+  @@map("website")
+  id                String               @id @default(uuid())
+  url               String               @unique
+
+  auctioneers       AuctioneerWebsite[]
+}
+
+model AuctioneerWebsite {
+  @@map("auctioneer_website")
+  auctioneerId      String
+  websiteId         String
+
+  auctioneer        Auctioneer          @relation(fields: [auctioneerId], references: [id])
+  website           Website             @relation(fields: [websiteId], references: [id])
+
+  @@id([auctioneerId, websiteId]) 
 }
