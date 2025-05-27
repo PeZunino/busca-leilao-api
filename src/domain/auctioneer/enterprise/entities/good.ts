@@ -1,6 +1,6 @@
 
-import { Real } from '@/domain/valueObjects/real'; 
 import { Entity } from '@/shared/entity'; 
+import { Real } from '../valueObjects/real';
 
 export interface GoodProps {
 	startingBid: Real; 
