@@ -4,16 +4,17 @@ import { Auctioneer } from '../../enterprise/entities/auctioneer';
 import { AuctioneersRepository } from '../repositories/auctioneer.repository';
 
 interface CreateAuctioneerUseCaseRequest{
-	name: string;
-	registrationCode: string;
-	phone: string;
-	email: string;
-	website: string;
-	street:string
-	number:string
+	name:string
+	registrationCode:string 
+	phoneNumber:string 
+	email:string
+	street:string 
+	number:string 
 	cep:string
-	neighborhood: string;
-	city: string;
+	neighborhood:string 
+	city:string
+	state:string
+	websites:string[]
 }
 
 
@@ -22,28 +23,29 @@ type CreateAuctioneerUseCaseResponse = Either<null,{auctioneer:Auctioneer}>
 @Injectable()
 export class CreateAuctioneerUseCase{
 
-
 	constructor(
-		private auctioneerRepository: AuctioneersRepository
+		private auctioneersRepository: AuctioneersRepository,
 	){}
 
-	async execute({
-		email,name,phone,registrationCode,website,cep,city,neighborhood,number,street
-	}:CreateAuctioneerUseCaseRequest):Promise<CreateAuctioneerUseCaseResponse>{
+	async execute(props:CreateAuctioneerUseCaseRequest):Promise<CreateAuctioneerUseCaseResponse>{
+		
 		const auctioneer = Auctioneer.create({
-			cep,
-			city,
-			neighborhood,
-			number,
-			street,
-			email,
-			name,
-			phone,
-			registrationCode,
-			website
+			address: {
+				cep:props.cep,
+				city:props.city,
+				neighborhood:props.neighborhood,
+				number:props.number,
+				state:props.state,
+				street:props.street,
+			},
+			email: props.email,
+			name:props.name,
+			phoneNumber: props.phoneNumber,
+			registrationCode:props.registrationCode,
+			websites:props.websites
 		});
 
-		await this.auctioneerRepository.create(auctioneer);
+		await this.auctioneersRepository.create(auctioneer);
 
 		return success({auctioneer});
 	}
