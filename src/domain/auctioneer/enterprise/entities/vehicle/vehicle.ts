@@ -1,6 +1,6 @@
 import z from 'zod';
-import { UniqueID } from '@/domain/valueObjects/uniqueId';
-import { Good, GoodProps } from '../good';
+import { UniqueID } from '../../valueObjects/uniqueId';
+import { Good, GoodInput, GoodProps } from '../good';
 
 export interface VehicleProps extends GoodProps { 
 	origin: string;
@@ -12,17 +12,13 @@ export interface VehicleProps extends GoodProps {
 	brand: string;
 	model: string;
 	version: string;
-	year: number;
-	yearModel: number;
+	year: Date;
+	yearModel: Date;
 	forCirculation: boolean;
 	fuel: string;
 }
 
-export interface VehicleInput {
-	startingBid: number; 
-	description: string;
-	observation?: string;
-	initialValue: number; 
+export interface VehicleInput extends GoodInput { 
 	origin: string;
 	mount: string;
 	mileage: number;
@@ -32,8 +28,8 @@ export interface VehicleInput {
 	brand: string;
 	model: string;
 	version: string;
-	year: number;
-	yearModel: number;
+	year: Date;
+	yearModel: Date;
 	forCirculation: boolean;
 	fuel: string;
 }
@@ -50,11 +46,9 @@ export const baseVehicleInputSchema = z.object({
 	mount: z.string()
 		.min(3, 'Mount must be at least 3 characters'),
 	mileage: z.number()
-		.int()
 		.nonnegative('Mileage must be a non-negative integer'),
 	hasKeys: z.boolean(),
-	licensePlate: z.string()
-		.regex(/^[A-Z]{3}\d{4}$|^[A-Z]{3}\d[A-Z]\d{2}$/i, 'Invalid license plate format'),
+	licensePlate: z.string(),
 	color: z.string()
 		.min(2, 'Color must be at least 2 characters'),
 	brand: z.string()
@@ -63,12 +57,10 @@ export const baseVehicleInputSchema = z.object({
 		.min(2, 'Model must be at least 2 characters'),
 	version: z.string()
 		.min(1, 'Version must be at least 1 character'),
-	year: z.number()
-		.int()
-		.min(1900),
-	yearModel: z.number()
-		.int()
-		.min(1900),
+	year: z.date()
+		.refine((date) => date.getFullYear() >= 1900, {message: 'Year must be 1900 or later'}),
+	yearModel: z.date()
+		.refine((date) => date.getFullYear() >= 1900, {message: 'Year model must be 1900 or later'}),
 	forCirculation: z.boolean(),
 	fuel: z.string()
 		.min(2, 'Fuel type must be at least 2 characters')

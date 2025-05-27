@@ -1,7 +1,7 @@
 import z from 'zod';
 import { applyVehicleTransformsAndRefines } from '@/shared/vehicleSchema';
 import { UniqueID } from '../../valueObjects/uniqueId';
-import { baseVehicleInputSchema, Vehicle, VehicleProps } from './vehicle';
+import { baseVehicleInputSchema, Vehicle, VehicleInput, VehicleProps } from './vehicle';
 
 interface CarProps extends VehicleProps { 
 	hasAirConditioning: boolean;
@@ -13,7 +13,7 @@ interface CarProps extends VehicleProps {
 	type: string; 
 }
 
-interface CarInput extends z.infer<typeof baseVehicleInputSchema> { 
+interface CarInput extends VehicleInput{ 
 	hasAirConditioning: boolean;
 	steeringType: string;
 	hasSpareTire: boolean;

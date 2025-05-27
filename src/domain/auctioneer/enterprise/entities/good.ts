@@ -5,14 +5,14 @@ import { Real } from '../valueObjects/real';
 export interface GoodProps {
 	startingBid: Real; 
 	description: string;
-	observation?: string;
+	observation: string;
 	initialValue: Real; 
 }
 
 export interface GoodInput {
 	startingBid: number; 
 	description: string;
-	observation?: string;
+	observation: string;
 	initialValue: number; 
 }
 
@@ -26,7 +26,7 @@ export abstract class Good extends Entity<GoodProps> {
 		return this.props.description;
 	}
 
-	get observation(): string | undefined {
+	get observation(): string {
 		return this.props.observation;
 	}
 
