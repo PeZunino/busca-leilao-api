@@ -1,69 +1,117 @@
-import { Entity } from '@/core/entities/entity';
-import { Optional } from '@/core/types/optional';
+import { AggregateRoot } from '@/shared/aggregateRoot';
+import { Address } from '../valueObjects/address';
+import { Email } from '../valueObjects/email';
+import { PhoneNumber } from '../valueObjects/phone';
+import { UniqueID } from '../valueObjects/uniqueId';
+import { Website } from '../valueObjects/website';
 
 interface Props{
-	name: string;
-	registrationCode: string;
-	phone: string;
-	email: string;
-	website: string;
-	street:string
-	number:string
-	cep:string
-	neighborhood: string;
-	city: string;
-	createdAt: Date
-	updatedAt?: Date | null
+	name: string
+	registrationCode: string
+	phoneNumber: PhoneNumber
+	email: Email
+	websites: Website[]
+	address:Address
 }
 
+type AddressProps = typeof Address.prototype;
 
-export class Auctioneer extends Entity<Props>{
+export class Auctioneer extends AggregateRoot<Props>{
+	public static create(props:Omit<Props,'websites'> & {websiteURLs:string[]}){
+		const email = Email.create(props.email.address); 
 
-	static create(
-		props:Optional<Props, 'createdAt'>
-	){
-		const auctioneer = new Auctioneer({
-			...props,
-			createdAt: props.createdAt ?? new Date(),
+		const phoneNumber = PhoneNumber.create(props.phoneNumber.rawNumber); 
+
+		const address = Address.create({
+			cep: props.address.cep,
+			city: props.address.city,
+			neighborhood: props.address.neighborhood,
+			number: props.address.number,
+			state: props.address.state,
+			street: props.address.street,
 		});
 
-		return auctioneer;
+		const websites = props.websiteURLs.map(url => Website.create(url)); 
+    
+		return new Auctioneer({
+			address,
+			email,
+			name:props.name,
+			phoneNumber,
+			registrationCode:props.registrationCode,
+			websites
+		});
 	}
 
-	get name(){
+	public equals(other: Auctioneer): boolean {
+		if (!(other instanceof Auctioneer)) {
+			return false;
+		}
+
+		return this.id.equals(other.id);
+	}
+  
+	public setName(newName: string): void {
+		this.props.name = newName;
+	}
+
+	public setEmail(newEmail: string){
+		this.props.email = Email.create(newEmail);
+	}
+	public setPhoneNumber( newPhoneNumber: string): void {
+		this.props.phoneNumber = PhoneNumber.create(newPhoneNumber);
+	}
+
+	public setAddress(newAddressProps:AddressProps): void {
+		this.props.address = Address.create(newAddressProps);
+	}
+
+	public addWebsite(url: string): void {
+		const newWebsite = Website.create(url);
+
+		if (!this.props.websites.some(w => w.equals(newWebsite))) {
+			this.props.websites.push(newWebsite);
+		}
+	}
+
+	public removeWebsite(url: string): void {
+		try {
+			const websiteToRemove = Website.create(url);
+
+			this.props.websites = this.props.websites.filter(w => !w.equals(websiteToRemove));
+		} catch {
+			console.warn(`Attempted to remove invalid URL: ${url}`);
+		}
+	}
+
+	get idValue(): UniqueID {
+		return this.id;
+	}
+
+	get name(): string {
 		return this.props.name;
 	}
-	get registrationCode(){
+
+	get registrationCode(): string {
 		return this.props.registrationCode;
 	}
-	get phone(){
-		return this.props.phone;
+
+	get phoneNumber(): PhoneNumber {
+		return this.props.phoneNumber;
 	}
-	get email(){
+
+	get email(): Email {
 		return this.props.email;
 	}
-	get website(){
-		return this.props.website;
+
+	get websites(): readonly Website[] {
+		return [
+			...this.props.websites
+		];
 	}
-	get street(){
-		return this.props.street;
+
+	get address(): Address {
+		return this.props.address;
 	}
-	get number(){
-		return this.props.number;
-	}
-	get cep(){
-		return this.props.cep;
-	}
-	get neighborhood(){
-		return this.props.neighborhood;
-	}
-	get city(){
-		return this.props.city;
-	}
-	get createdAt(){
-		return this.props.createdAt;
-	}
-	get updatedAt(){
-		return this.props.updatedAt;
-	}
-} 
+
+}
