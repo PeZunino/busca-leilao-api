@@ -14,13 +14,29 @@ interface Props{
 	address:Address
 }
 
-type AddressProps = typeof Address.prototype;
+interface AuctioneerInput{
+	name: string
+	registrationCode: string
+	phoneNumber: string
+	email: string
+	websites: string[]
+	address: AddressProps
+}
+
+interface AddressProps{
+	street:string;
+	number:string;
+	cep:string;
+	neighborhood: string;
+	city: string;
+	state:string; 
+}
 
 export class Auctioneer extends AggregateRoot<Props>{
-	public static create(props:Omit<Props,'websites'> & {websiteURLs:string[]}){
-		const email = Email.create(props.email.address); 
+	public static create(props:AuctioneerInput){
+		const email = Email.create(props.email); 
 
-		const phoneNumber = PhoneNumber.create(props.phoneNumber.rawNumber); 
+		const phoneNumber = PhoneNumber.create(props.phoneNumber); 
 
 		const address = Address.create({
 			cep: props.address.cep,
@@ -31,7 +47,7 @@ export class Auctioneer extends AggregateRoot<Props>{
 			street: props.address.street,
 		});
 
-		const websites = props.websiteURLs.map(url => Website.create(url)); 
+		const websites = props.websites.map(url => Website.create(url)); 
     
 		return new Auctioneer({
 			address,
