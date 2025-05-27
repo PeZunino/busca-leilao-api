@@ -9,37 +9,191 @@ datasource db {
 
 model Auctioneer {
   @@map("auctioneer")
-  id                String               @id @default(uuid())
-  number            String
-  cep               String
-  neighborhood      String
-  city              String
-  name              String
-  registrationCode  String
-  phone             String
-  email             String              @unique
-  street            String
-  createdAt         DateTime            @default(now()) @map("created_at")
-  updatedAt         DateTime?           @updatedAt @map("updated_at")
-
-  websites          AuctioneerWebsite[]
+  id                   String        @id @default(uuid())
+  
+  name                 String        @unique
+  registrationCode     String        @unique @map("registration_code")
+  phoneNumber          String        @map("phone_number")
+  email                String
+  street               String
+  number               String
+  cep                  String
+  neighborhood         String
+  city                 String
+  state                String
+  websites             String[]
+  createdAt            DateTime      @default(now()) @map("created_at")
+  updatedAt            DateTime?     @updatedAt @map("updated_at")
+  Auction              Auction[]
 }
 
-model Website {
-  @@map("website")
-  id                String               @id @default(uuid())
-  url               String               @unique
+model Committee{
+  @@map("committee")
+  id                   String         @id @default(uuid())
+  name                 String
+  createdAt            DateTime      @default(now()) @map("created_at")
+  updatedAt            DateTime?     @updatedAt @map("updated_at")
 
-  auctioneers       AuctioneerWebsite[]
+  auction              Auction[]
 }
 
-model AuctioneerWebsite {
-  @@map("auctioneer_website")
-  auctioneerId      String
-  websiteId         String
+model Auction {
+  @@map("auction")
+  id                   String         @id @default(uuid())
+  
+  publicationDate      DateTime       @map("publication_date")
+  createdAt            DateTime       @default(now()) @map("created_at")
+  updatedAt            DateTime?      @updatedAt @map("updated_at")
+  items                AuctionItem[]
 
-  auctioneer        Auctioneer          @relation(fields: [auctioneerId], references: [id])
-  website           Website             @relation(fields: [websiteId], references: [id])
+  openings             AuctionOpening[]
+  
+  auctioneerId         String         @map("auctioneer_id")
+  auctioneer           Auctioneer @relation(fields: [auctioneerId], references: [id])
+  
+  committeeId          String         @map("committee_id")
+  committee            Committee @relation(fields: [committeeId], references: [id])
+}
+model AuctionOpening {
+  @@map("auction_opening")
 
-  @@id([auctioneerId, websiteId]) 
+  id        String   @id @default(uuid())
+  date      DateTime @map("date")
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  auctionId String   @map("auction_id")
+  auction   Auction  @relation(fields: [auctionId], references: [id])
+}
+
+
+model AuctionItem{
+  @@map("auction_item")
+  id            String     @id @default(uuid())
+  
+  startingBid   Float      @map("starting_bid")
+  description   String
+  observation   String?
+  initialValue  Float      @map("initial_value")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime?  @updatedAt @map("updated_at")
+  car           Car?     
+  motorcycle    Motorcycle?
+  field         Field?
+  realEstate    RealEstate?   
+
+  auctionId     String     @map("auction_id")
+  auction       Auction    @relation(fields: [auctionId], references: [id])
+}
+
+model Car{
+  @@map("car")
+  id                 String         @id @default(uuid())
+  origin             String
+  mount              String
+  mileage            Int
+  hasKeys            Boolean        @map("has_keys")
+  licensePlate       String         @map("license_plate")
+  color              String
+  brand              String
+  model              String
+  version            String
+  year               Int
+  yearModel          Int            @map("year_model")
+  forCirculation     Boolean        @map("for_circulation")
+  fuel               String
+  hasAirConditioning Boolean?       @map("has_air_conditioning")
+  steeringType       String?        @map("steering_type")
+  hasSpareTire       Boolean?       @map("has_spare_tire")
+  gearbox            String?
+  hasArmor           Boolean?       @map("has_armor")
+  numberOfDoors      Int?           @map("number_of_doors")
+  class              String 
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime?      @updatedAt @map("updated_at")
+
+  auctionItemId      String         @unique @map("auction_item_id")
+  auctionItem        AuctionItem    @relation(fields: [auctionItemId], references: [id])
+
+}
+
+model Motorcycle{
+  @@map("motorcycle")
+  id                 String         @id @default(uuid())
+  origin             String
+  mount              String
+  mileage            Int
+  hasKeys            Boolean        @map("has_keys")
+  licensePlate       String         @map("license_plate")
+  color              String
+  brand              String
+  model              String
+  version            String
+  year               Int
+  yearModel          Int            @map("year_model")
+  forCirculation     Boolean        @map("for_circulation")
+  fuel               String
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime?      @updatedAt @map("updated_at")
+
+  auctionItemId      String         @unique @map("auction_item_id")
+  auctionItem        AuctionItem    @relation(fields: [auctionItemId], references: [id])
+}
+
+model Field{
+  @@map("field")
+  id                          String         @id @default(uuid())
+  origin                      String
+	isOccupied                  Boolean        @map("is_occupied")
+	squareMetersTotalArea       Float          @map("square_meters_total_area")
+	squareMetersBuiltArea       Float          @map("square_meters_built_area")
+	squareMetersPrivateArea     Float          @map("square_meters_private_area")
+	squareMetersFieldArea       Float          @map("square_meters_field_area")
+	debits                      Float
+	allowVisits                 Boolean        @map("allow_visits")
+	lawsuit                     Boolean
+	registration                String
+	street                      String
+  number                      String
+  cep                         String
+  neighborhood                String
+  city                        String
+  state                       String
+	complement                  String?
+	kilometersDistanceToSubway  Int?           @map("kilometers_distance_to_subway")
+  isUrban                     Boolean        @map("is_urban")
+	hasWaterAccess              Boolean        @map("has_water_access")
+  createdAt                   DateTime       @default(now()) @map("created_at")
+  updatedAt                   DateTime?      @updatedAt @map("updated_at")
+
+  auctionItemId               String         @unique @map("auction_item_id")
+  auctionItem                 AuctionItem    @relation(fields: [auctionItemId], references: [id])
+}
+model RealEstate{
+  @@map("real_estate")
+  id                          String         @id @default(uuid())
+  origin                      String
+  isOccupied                  Boolean        @map("is_occupied")
+	squareMetersTotalArea       Float          @map("square_meters_total_area")
+	squareMetersBuiltArea       Float          @map("square_meters_built_area")
+	squareMetersPrivateArea     Float          @map("square_meters_private_area")
+	squareMetersFieldArea       Float          @map("square_meters_field_area")
+	debits                      Float
+	allowVisits                 Boolean        @map("allow_visits")
+	lawsuit                     Boolean
+	registration                String
+	street                      String
+  number                      String
+  cep                         String
+  neighborhood                String
+  city                        String
+  state                       String
+	complement                  String?
+	kilometersDistanceToSubway  Int?           @map("kilometers_distance_to_subway")
+  hasGarage                   Boolean        @map("has_garage")
+	numberOfBedrooms            Int            @map("number_of_bedrooms")
+  createdAt                   DateTime       @default(now()) @map("created_at")
+  updatedAt                   DateTime?      @updatedAt @map("updated_at")
+
+  auctionItemId               String         @unique @map("auction_item_id")
+  auctionItem                 AuctionItem    @relation(fields: [auctionItemId], references: [id])
 }
