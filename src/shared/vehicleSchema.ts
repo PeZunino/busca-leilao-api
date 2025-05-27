@@ -1,9 +1,7 @@
 
 import z from 'zod';
-import { VehicleProps } from '@/domain/entities/vehicle/vehicle';
-import { VehicleInput } from '@/domain/entities/vehicle/vehicle'; 
-import { Currency, Real } from '@/domain/valueObjects/real';
-
+import { VehicleInput, VehicleProps } from '@/domain/auctioneer/enterprise/entities/vehicle/vehicle';
+import { Currency,Real } from '@/domain/auctioneer/enterprise/valueObjects/real';
 
 export function applyVehicleTransformsAndRefines<T extends z.ZodObject<any>>(
 	baseSchema: T
