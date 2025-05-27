@@ -105,12 +105,12 @@ model Car{
   yearModel                   Int            @map("year_model")
   forCirculation              Boolean        @map("for_circulation")
   fuel                        String
-  hasAirConditioning          Boolean?       @map("has_air_conditioning")
-  steeringType                String?        @map("steering_type")
-  hasSpareTire                Boolean?       @map("has_spare_tire")
-  gearbox                     String?
-  hasArmor                    Boolean?       @map("has_armor")
-  numberOfDoors               Int?           @map("number_of_doors")
+  hasAirConditioning          Boolean       @map("has_air_conditioning")
+  steeringType                String        @map("steering_type")
+  hasSpareTire                Boolean       @map("has_spare_tire")
+  gearbox                     String
+  hasArmor                    Boolean       @map("has_armor")
+  numberOfDoors               Int           @map("number_of_doors")
   class                       String 
   createdAt                   DateTime       @default(now()) @map("created_at")
   updatedAt                   DateTime?      @updatedAt @map("updated_at")
