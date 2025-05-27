@@ -4,19 +4,18 @@ import { Auctioneer } from '@/domain/auctioneer/enterprise/entities/auctioneer';
 export class PrismaAuctioneerMapper{
 	static toPrisma(auctioneer:Auctioneer):Prisma.AuctioneerCreateInput{
 		return{
-			cep:auctioneer.cep,
-			city: auctioneer.city,
-			email: auctioneer.email,
+			id: auctioneer.id.toString(),
+			cep: auctioneer.address.cep,
+			city:auctioneer.address.city,
+			email: auctioneer.email.address,
 			name: auctioneer.name,
-			neighborhood: auctioneer.neighborhood,
-			number: auctioneer.number,
-			phone: auctioneer.phone,
+			neighborhood: auctioneer.address.neighborhood,
+			number: auctioneer.address.number,
+			phoneNumber: auctioneer.phoneNumber.rawNumber,
 			registrationCode: auctioneer.registrationCode,
-			street: auctioneer.street,
-			website: auctioneer.website,
-			createdAt: auctioneer.createdAt,
-			updatedAt: auctioneer.updatedAt,
-			id:auctioneer.id.toString(),
+			state: auctioneer.address.state,
+			street: auctioneer.address.street,
+			websites: auctioneer.websites.map(website=>website.url.toString())
 		};
 	}
 }
