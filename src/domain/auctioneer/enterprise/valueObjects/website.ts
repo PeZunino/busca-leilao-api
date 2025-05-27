@@ -8,8 +8,13 @@ export class Website{
 	private constructor(private readonly urlValue:URL){}
 
 	public static create(urlInput:string):Website{
+
+		const urlWithProtocol = urlInput.startsWith('http://') || urlInput.startsWith('https://') 
+			? urlInput 
+			: `https://${urlInput}`;
+
 		try {
-			const validURLString = Website.schema.parse(urlInput);
+			const validURLString = Website.schema.parse(urlWithProtocol);
 
 			return new Website(new URL(validURLString));
       
