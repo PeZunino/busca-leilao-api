@@ -1,19 +1,17 @@
-import { UniqueEntityID } from './unique-entity-id';
+import { UniqueID } from '@/domain/auctioneer/enterprise/valueObjects/uniqueId';
 
 export abstract class Entity<Props> {
-	private _id: UniqueEntityID;
+	private _id: UniqueID;
 	protected props: Props;
 
 	get id() {
 		return this._id;
 	}
 
-	// protected constructor(props: Props, id?: UniqueEntityID) {
-	protected constructor(props: Props) {
-		
+	protected constructor(props: Props, id?: UniqueID) {
 		this.props = props;
 
-		this._id = new UniqueEntityID();
+		this._id = id ?? new UniqueID(id);
 	}
 
 	public equals(entity: Entity<any>) {
