@@ -1,4 +1,4 @@
-import { Entity } from '@/shared/entity';
+import { Entity } from '@/core/shared/entity';
 
 interface Props{
 	name:string
