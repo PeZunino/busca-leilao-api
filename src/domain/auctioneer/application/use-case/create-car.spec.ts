@@ -16,7 +16,6 @@ describe('Create Car', async()=>{
 		const result = await sut.execute({
 			brand:car.brand,
 			color:car.color,
-			description:car.description,
 			forCirculation:car.forCirculation,
 			fuel:car.fuel,
 			gearbox:car.gearbox,
@@ -24,20 +23,16 @@ describe('Create Car', async()=>{
 			hasArmor:car.hasArmor,
 			hasKeys:car.hasKeys,
 			hasSpareTire:car.hasSpareTire,
-			initialValue:car.initialValue.toValue(),
 			licensePlate:car.licensePlate,
 			mileage:car.mileage,
 			model:car.model,
 			mount:car.mount,
 			numberOfDoors:car.numberOfDoors,
-			observation:car.observation,
-			origin:car.origin,
-			startingBid:car.startingBid.toValue(),
 			steeringType:car.steeringType,
 			type:car.type,
 			version:car.version,
 			year:car.year,
-			yearModel:car.yearModel,
+			yearModel:car.yearModel
 		});
 
 		expect(result.isSuccessful())
