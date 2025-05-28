@@ -30,8 +30,7 @@ export class Address{
 
 	private constructor(private readonly props:Props){}
 
-	public static create(props: Omit<Props, 'cep' | 'state'> & { cep: string,
-		state: string }): Address {
+	public static create(props:Props): Address {
 		try {
 			const validatedProps = addressSchema.parse(props);
 

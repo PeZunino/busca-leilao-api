@@ -1,15 +1,14 @@
 
-import { Entity } from '@/shared/entity'; 
+import { Entity } from '@/core/shared/entity';
 import { Real } from '../valueObjects/real';
 
 export interface GoodProps {
 	startingBid: Real; 
-	description: string;
-	observation: string;
 	initialValue: Real; 
 }
 
 export interface GoodInput {
+	origin:string
 	startingBid: number; 
 	description: string;
 	observation: string;
@@ -22,17 +21,9 @@ export abstract class Good extends Entity<GoodProps> {
 		return this.props.startingBid;
 	}
 
-	get description(): string {
-		return this.props.description;
-	}
-
-	get observation(): string {
-		return this.props.observation;
-	}
-
 	get initialValue(): Real {
 		return this.props.initialValue;
 	}
-
+	
 	public abstract getCategory(): string;
 }

@@ -1,9 +1,9 @@
 import z from 'zod';
 import { applyVehicleTransformsAndRefines } from '@/shared/vehicleSchema';
 import { UniqueID } from '../../valueObjects/uniqueId';
-import { baseVehicleInputSchema, Vehicle, VehicleInput, VehicleProps } from './vehicle';
+import { baseVehicleInputSchema, Vehicle, VehicleDTO, VehicleProps } from './vehicle';
 
-interface CarProps extends VehicleProps { 
+export interface CarProps extends VehicleProps { 
 	hasAirConditioning: boolean;
 	steeringType: string;
 	hasSpareTire: boolean;
@@ -13,7 +13,7 @@ interface CarProps extends VehicleProps {
 	type: string; 
 }
 
-interface CarInput extends VehicleInput{ 
+export interface CarDTO extends VehicleDTO{ 
 	hasAirConditioning: boolean;
 	steeringType: string;
 	hasSpareTire: boolean;
@@ -50,12 +50,33 @@ export class Car extends Vehicle{
 		super(props, id);
 	}
 	
-	public static create(input: CarInput, id?: UniqueID): Car { 
+	public static create(input: CarDTO, id?: UniqueID): Car { 
 		try {
-			
-			const validatedProps = fullCarSchema.parse(input);
+		
+			fullCarSchema.parse(input);
 
-			return new Car(validatedProps as CarProps, id);
+			return new Car({
+				brand:input.brand,
+				color:input.color,
+				forCirculation:input.forCirculation,
+				fuel:input.fuel,
+				gearbox:input.gearbox,
+				hasAirConditioning:input.hasAirConditioning,
+				hasArmor:input.hasArmor,
+				hasKeys:input.hasKeys,
+				hasSpareTire:input.hasSpareTire,
+				licensePlate:input.licensePlate,
+				mileage:input.mileage,
+				model:input.model,
+				mount:input.mount,
+				numberOfDoors:input.numberOfDoors,
+				steeringType:input.steeringType,
+				type:input.type,
+				version:input.version,
+				year:input.year,
+				yearModel:input.yearModel
+			}, id);
+			
 		} catch (error: any) {
 			if (error instanceof z.ZodError) {
 				throw new Error(`Car creation failed: ${error.errors.map(e => e.message)
@@ -64,10 +85,6 @@ export class Car extends Vehicle{
 
 			throw new Error(`Car creation failed: ${error.message || 'Unknown error'}`);
 		}
-	}
-
-	get origin(){
-		return this.props.origin;
 	}
 
 	get mount(){

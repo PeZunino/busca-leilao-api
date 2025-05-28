@@ -1,33 +1,97 @@
-import { AggregateRoot } from '@/shared/aggregateRoot';
+import { AggregateRoot } from '@/core/shared/aggregateRoot';
 import { Metadata } from '../valueObjects/metaData';
 import { UniqueID } from '../valueObjects/uniqueId';
-import { Good } from './good';
+import { AuctionItem, CreateAuctionDTO } from './auctionItem';
+import { AuctionOpening } from './auctionOpening';
+
 
 export interface AuctionProps {
 	publicationDate: Date;
-	openDates: Date[];
-	items: Good[];
+	auctioneerId :UniqueID        
+	committeeId :UniqueID    
+	openDates: AuctionOpening[];
+	items: AuctionItem[];
 	metaData?: Metadata;
+}
+
+export interface AuctionPropsInput{
+	publicationDate: Date;
+	openDates: Date[];
+	auctioneerId :string        
+	committeeId :string       
+	items: CreateAuctionDTO[];
+	metaData?: Record<string,string>;
 }
 
 export class Auction extends AggregateRoot<AuctionProps> {
 
-	constructor(props: AuctionProps, id?: UniqueID) {
+	private constructor(props: AuctionProps, id?: UniqueID) {
 		super(props, id);
 	}
 
-	public static create(props: Omit<AuctionProps, 'metaData'> & {
-		metaDataInput?: Record<string, string>; 
-	}, id?: UniqueID): Auction {
+	public static create(props: AuctionPropsInput , id?: UniqueID): Auction {
+
+		const metaData = props.metaData ? Metadata.create(props.metaData) : undefined;
+
+		const auctionId = id ?? new UniqueID();
+
+		const items = props.items.map(item=>{
+			const itemProps = {
+				origin: item.origin,
+				startingBid: item.startingBid, 
+				description: item.description,
+				observation: item.observation,
+				initialValue: item.initialValue
+			};
+		
+			switch(item.itemType ){
+				case 'car':
+					return AuctionItem.create({
+						itemType: 'car',
+						...itemProps,
+						good: item.good
+					}, auctionId);
+		
+				case 'motorcycle':
+					return AuctionItem.create({
+						itemType: 'motorcycle',
+						...itemProps,
+						good: item.good
+					}, auctionId);
+		
+				case 'built':
+					return AuctionItem.create({
+						itemType: 'built',
+						...itemProps,
+						good: item.good
+					}, auctionId);
+		
+				case 'unbuilt':
+					return AuctionItem.create({
+						itemType: 'unbuilt',
+						...itemProps,
+						good: item.good
+					}, auctionId);
+			}
+		});
+
 
 		return new Auction({
 			...props,
-			metaData: props.metaDataInput ? Metadata.create(props.metaDataInput) : undefined,
-			openDates: props.openDates.sort((a, b) => a.getTime() - b.getTime())
+			metaData,
+			items,
+			openDates:props.openDates.map(date=>
+				AuctionOpening.create({
+					auctionId,
+					date
+				})
+			),
+			auctioneerId:new UniqueID(props.auctioneerId),
+			committeeId:new UniqueID(props.committeeId),
 		}, id);
 	}
 
-	public addItem(item: Good): void {
+	public addItem(item: AuctionItem): void {
 		this.props.items.push(item);
 	}
 
@@ -39,15 +103,23 @@ export class Auction extends AggregateRoot<AuctionProps> {
 		return this.props.publicationDate;
 	}
 
-	get openDates(): Date[] {
+	get openDates(): AuctionOpening[] {
 		return this.props.openDates;
 	}
 
-	get items(): Good[] {
+	get items(): AuctionItem[] {
 		return this.props.items;
 	}
 
 	get metaData(): Metadata | undefined {
 		return this.props.metaData;
+	}
+
+	get auctioneerId():UniqueID{
+		return this.auctioneerId;
+	}
+
+	get committeeId():UniqueID{
+		return this.committeeId;
 	}
 }

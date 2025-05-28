@@ -1,4 +1,4 @@
-import { AggregateRoot } from '@/shared/aggregateRoot';
+import { AggregateRoot } from '@/core/shared/aggregateRoot';
 import { Address } from '../valueObjects/address';
 import { Email } from '../valueObjects/email';
 import { PhoneNumber } from '../valueObjects/phone';
@@ -14,7 +14,7 @@ interface Props{
 	address:Address
 }
 
-interface AuctioneerInput{
+export interface AuctioneerInput{
 	name: string
 	registrationCode: string
 	phoneNumber: string

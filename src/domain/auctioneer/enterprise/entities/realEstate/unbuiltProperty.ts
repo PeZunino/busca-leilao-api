@@ -1,14 +1,17 @@
 import z from 'zod';
-import { UniqueID } from '@/domain/valueObjects/uniqueId';
 import { applyRealEstateTransformsAndRefines } from '@/shared/realEstateSchema';
-import { baseRealEstateInputSchema, RealEstate, RealEstateInput,RealEstateProps } from './realEstate';
+import { Address } from '../../valueObjects/address';
+import { Area, AreaUnit } from '../../valueObjects/area';
+import { Real } from '../../valueObjects/real';
+import { UniqueID } from '../../valueObjects/uniqueId';
+import { baseRealEstateInputSchema, RealEstate, RealEstateDTO,RealEstateProps } from './realEstate';
 
 export interface UnbuiltPropertyProps extends RealEstateProps {
 	isUrban: boolean;
 	hasWaterAccess: boolean;
 }
 
-export interface UnbuiltPropertyInput extends RealEstateInput {
+export interface UnbuiltPropertyDTO extends RealEstateDTO {
 	isUrban: boolean;
 	hasWaterAccess: boolean;
 }
@@ -41,11 +44,26 @@ export class UnbuiltProperty extends RealEstate {
 		super(props, id);
 	}
 
-	public static create(input: UnbuiltPropertyInput, id?: UniqueID): UnbuiltProperty {
+	public static create(input: UnbuiltPropertyDTO, id?: UniqueID): UnbuiltProperty {
 		try {
-			const validatedProps = fullUnbuiltPropertySchema.parse(input);
+			fullUnbuiltPropertySchema.parse(input);
 
-			return new UnbuiltProperty(validatedProps as UnbuiltPropertyProps, id);
+			return new UnbuiltProperty({
+				address:Address.create(input.address),
+				allowVisits:input.allowVisits,
+				builtArea:Area.create(input.builtArea.value,AreaUnit[input.builtArea.unit]),
+				debits:Real.create(input.debits),
+				fieldArea:Area.create(input.fieldArea.value,AreaUnit[input.fieldArea.unit]),
+				hasWaterAccess:input.hasWaterAccess,
+				isOccupied:input.isOccupied,
+				isUrban:input.isUrban,
+				lawsuit:input.lawsuit,
+				privateArea:Area.create(input.privateArea.value,AreaUnit[input.privateArea.unit]),
+				registration:input.registration,
+				totalArea:Area.create(input.totalArea.value,AreaUnit[input.totalArea.unit]),
+				complement:input.complement,
+				distanceToMetro:input.distanceToMetro
+			}, id);
 		} catch (error: any) {
 			if (error instanceof z.ZodError) {
 				throw new Error(`Unbuilt Property creation failed: ${error.errors.map(e => e.message)

@@ -1,12 +1,11 @@
 import z from 'zod';
-import { Address, addressSchema } from '@/domain/valueObjects/address';
-import { Area, AreaUnit } from '@/domain/valueObjects/area';
-import { Real } from '@/domain/valueObjects/real';
-import { UniqueID } from '@/domain/valueObjects/uniqueId';
-import { Good, GoodProps } from '../good';
+import { Entity } from '../../../../../core/shared/entity';
+import { Address, addressSchema } from '../../valueObjects/address';
+import { Area, AreaUnit } from '../../valueObjects/area';
+import { Real } from '../../valueObjects/real';
+import { UniqueID } from '../../valueObjects/uniqueId';
 
-export interface RealEstateProps extends GoodProps { 
-	origin: string;
+export interface RealEstateProps { 
 	isOccupied: boolean;
 	totalArea: Area;
 	builtArea: Area;
@@ -21,21 +20,16 @@ export interface RealEstateProps extends GoodProps {
 	distanceToMetro?: number;
 }
 
-export interface RealEstateInput {
-	startingBid: number; 
-	description: string;
-	observation?: string;
-	initialValue: number; 
-	origin: string;
+export interface RealEstateDTO {
 	isOccupied: boolean;
 	totalArea: { value: number;
-		unit: AreaUnit };
+		unit: string };
 	builtArea: { value: number;
-		unit: AreaUnit };
+		unit: string };
 	privateArea: { value: number;
-		unit: AreaUnit };
+		unit: string };
 	fieldArea: { value: number;
-		unit: AreaUnit };
+		unit: string };
 	debits: number; 
 	allowVisits: boolean;
 	lawsuit: boolean;
@@ -54,8 +48,6 @@ export const baseRealEstateInputSchema = z.object({
 		.optional(),
 	initialValue: z.number()
 		.positive('Initial value must be positive'),
-	origin: z.string()
-		.min(3, 'Origin must be at least 3 characters'),
 	isOccupied: z.boolean(),
 	totalArea: z.object({
 		value: z.number()
@@ -94,7 +86,7 @@ export const baseRealEstateInputSchema = z.object({
 });
 
 
-export abstract class RealEstate extends Good { 
+export abstract class RealEstate extends Entity<RealEstateProps> { 
 	protected constructor(protected readonly props: RealEstateProps, id?: UniqueID) {
 		super(props, id); 
 	}
@@ -103,9 +95,6 @@ export abstract class RealEstate extends Good {
 		return 'RealEstate';
 	}
 	
-	get origin(): string {
-		return this.props.origin; 
-	}
 	get isOccupied(): boolean {
 		return this.props.isOccupied; 
 	}

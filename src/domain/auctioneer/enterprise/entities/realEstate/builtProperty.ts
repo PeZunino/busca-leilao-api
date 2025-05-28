@@ -1,14 +1,17 @@
 import z from 'zod';
-import { UniqueID } from '@/domain/valueObjects/uniqueId';
 import { applyRealEstateTransformsAndRefines } from '@/shared/realEstateSchema';
-import { baseRealEstateInputSchema, RealEstate, RealEstateInput,RealEstateProps } from './realEstate';
+import { Address } from '../../valueObjects/address';
+import { Area, AreaUnit } from '../../valueObjects/area';
+import { Real } from '../../valueObjects/real';
+import { UniqueID } from '../../valueObjects/uniqueId';
+import { baseRealEstateInputSchema, RealEstate, RealEstateDTO,RealEstateProps } from './realEstate';
 
 export interface BuiltPropertyProps extends RealEstateProps {
 	hasGarage: boolean;
 	numberOfBedrooms: number;
 }
 
-export interface BuiltPropertyInput extends RealEstateInput {
+export interface BuiltPropertyDTO extends RealEstateDTO {
 	hasGarage: boolean;
 	numberOfBedrooms: number;
 }
@@ -30,11 +33,26 @@ export class BuiltProperty extends RealEstate {
 		super(props, id);
 	}
 
-	public static create(input: BuiltPropertyInput, id?: UniqueID): BuiltProperty {
+	public static create(input: BuiltPropertyDTO, id?: UniqueID): BuiltProperty {
 		try {
-			const validatedProps = fullBuiltPropertySchema.parse(input);
+			fullBuiltPropertySchema.parse(input);
 
-			return new BuiltProperty(validatedProps as BuiltPropertyProps, id);
+			return new BuiltProperty({
+				address:Address.create(input.address),
+				allowVisits: input.allowVisits,
+				builtArea:Area.create(input.builtArea.value,AreaUnit[input.builtArea.unit]),
+				debits:Real.create(input.debits),
+				fieldArea:Area.create(input.fieldArea.value,AreaUnit[input.fieldArea.unit]),
+				hasGarage: input.hasGarage,
+				isOccupied: input.isOccupied,
+				lawsuit: input.lawsuit,
+				numberOfBedrooms: input.numberOfBedrooms,
+				privateArea:Area.create(input.privateArea.value,AreaUnit[input.privateArea.unit]),
+				registration: input.registration,
+				totalArea:Area.create(input.totalArea.value,AreaUnit[input.totalArea.unit]),
+				complement: input.complement,
+				distanceToMetro: input.distanceToMetro
+			}, id);
 		} catch (error: any) {
 			if (error instanceof z.ZodError) {
 				throw new Error(`Built Property creation failed: ${error.errors.map(e => e.message)

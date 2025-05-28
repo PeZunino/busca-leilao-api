@@ -1,9 +1,7 @@
 import z from 'zod';
+import { Entity } from '../../../../../core/shared/entity';
 import { UniqueID } from '../../valueObjects/uniqueId';
-import { Good, GoodInput, GoodProps } from '../good';
-
-export interface VehicleProps extends GoodProps { 
-	origin: string;
+export interface VehicleProps{ 
 	mount: string;
 	mileage: number;
 	hasKeys: boolean;
@@ -18,8 +16,7 @@ export interface VehicleProps extends GoodProps {
 	fuel: string;
 }
 
-export interface VehicleInput extends GoodInput { 
-	origin: string;
+export interface VehicleDTO { 
 	mount: string;
 	mileage: number;
 	hasKeys: boolean;
@@ -35,14 +32,7 @@ export interface VehicleInput extends GoodInput {
 }
 
 export const baseVehicleInputSchema = z.object({
-	startingBid: z.number(), 
-	description: z.string()
-		.min(10, 'Description must be at least 10 characters'),
-	observation: z.string()
-		.optional(),
-	initialValue: z.number(), 
-	origin: z.string()
-		.min(3, 'Origin must be at least 3 characters'),
+
 	mount: z.string()
 		.min(3, 'Mount must be at least 3 characters'),
 	mileage: z.number()
@@ -66,7 +56,7 @@ export const baseVehicleInputSchema = z.object({
 		.min(2, 'Fuel type must be at least 2 characters')
 });
 
-export abstract class Vehicle extends Good {
+export abstract class Vehicle extends Entity<VehicleProps>{
 	protected constructor(protected readonly props: VehicleProps, id?: UniqueID) {
 		super(props, id);
 	}
@@ -74,11 +64,6 @@ export abstract class Vehicle extends Good {
 	public getCategory(): string {
 		return 'Vehicle';
 	}
-
-	get origin(){
-		return this.props.origin;
-	}
-
 	get mount(){
 		return this.props.mount;
 	}
