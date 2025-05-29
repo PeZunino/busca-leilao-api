@@ -1,7 +1,7 @@
 import { AggregateRoot } from '@/core/shared/aggregateRoot';
 import { Metadata } from '../valueObjects/metaData';
 import { UniqueID } from '../valueObjects/uniqueId';
-import { AuctionItem, CreateAuctionDTO } from './auctionItem';
+import { AuctionItem, CreateAuctionItemDTO } from './auctionItem';
 import { AuctionOpening } from './auctionOpening';
 
 
@@ -19,7 +19,7 @@ export interface AuctionPropsInput{
 	openDates: Date[];
 	auctioneerId :string        
 	committeeId :string       
-	items: CreateAuctionDTO[];
+	items: CreateAuctionItemDTO[];
 	metaData?: Record<string,string>;
 }
 

@@ -1,12 +1,12 @@
 import { success } from '@/core/either';
 import { Auction } from '../../enterprise/entities/auction';
-import { CreateAuctionDTO } from '../../enterprise/entities/auctionItem';
+import { CreateAuctionItemDTO } from '../../enterprise/entities/auctionItem';
 import { UniqueID } from '../../enterprise/valueObjects/uniqueId';
 import { AuctionsRepository } from '../repositories/auctions.repository';
 
 interface CreateAuctionUseCaseRequest{
 	publicationDate :Date     
-	items :CreateAuctionDTO[]
+	items :CreateAuctionItemDTO[]
 	openDates :Date[]
 	auctioneerId :string        
 	committeeId :string       
