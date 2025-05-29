@@ -1,7 +1,11 @@
 import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { z } from 'zod';
 import { CreateAuctioneerUseCase } from '@/modules/auctions/application/use-cases/create-auctioneer';
+<<<<<<< HEAD
 import { ZodValidationPipe } from '../../../../../core/pipes/zod-validation-pipe';
+=======
+import { ZodValidationPipe } from '../../../../../infra/pipes/zod-validation-pipe';
+>>>>>>> 15f76988612045b0ba19975eb7bb2601ea1ce05e
 
 const createAuctioneerBodySchema = z.object({
 	name: z.string(),
