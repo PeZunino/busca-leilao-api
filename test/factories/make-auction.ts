@@ -1,11 +1,11 @@
-import { AuctionPropsInput } from '@/modules/auctions/domain/entities/auction';
-import { GoodDTO, GoodType } from '@/modules/auctions/domain/factories/good';
+import { CreateAuctionDTO, CreateGoodDTO } from '@/modules/auctions/application/dto/create-auction.dto';
+import { GoodType } from '@/modules/auctions/domain/factories/good';
 import { AreaUnit } from '@/modules/auctions/domain/valueObjects/area';
 import { UniqueID } from '@/modules/auctions/domain/valueObjects/uniqueId';
 import { Fabric } from './fabric';
 
 export class MakeAuction extends Fabric {
-	public execute(): AuctionPropsInput {
+	public execute(): CreateAuctionDTO {
 
 		const auctioneerId = new UniqueID()
 			.toString();
@@ -17,23 +17,6 @@ export class MakeAuction extends Fabric {
 
 		const good = this.makeGood(type);
 
-		const item = {
-			description: this.faker.lorem.sentence(),
-			initialValue: this.faker.number.float({
-				min: 2000,
-				max: 40000,
-				fractionDigits: 2
-			}),
-			origin: this.faker.lorem.word({ length: 5 }),
-			startingBid: this.faker.number.float({
-				min: 2000,
-				max: 40000,
-				fractionDigits: 2
-			}),
-			observation: this.faker.lorem.sentence(),
-			type,
-			good
-		};
 
 		return {
 			publicationDate: this.faker.date.past(),
@@ -41,14 +24,34 @@ export class MakeAuction extends Fabric {
 				this.faker.date.future(),
 			],
 			items: [
-				item
+				{
+					description: this.faker.lorem.sentence(),
+					initialValue: this.faker.number.float({
+						min: 2000,
+						max: 40000,
+						fractionDigits: 2
+					}),
+					origin: this.faker.lorem.word({ length: 5 }),
+					startingBid: this.faker.number.float({
+						min: 2000,
+						max: 40000,
+						fractionDigits: 2
+					}),
+					observation: this.faker.lorem.sentence(),
+					good,
+					debits: this.faker.number.float({
+						min: 2000,
+						max: 40000,
+						fractionDigits: 2
+					}),
+				}
 			],
 			auctioneerId,
 			committeeId
 		};
 	}
 
-	private makeGood(type: GoodType): GoodDTO {
+	private makeGood(type: GoodType): CreateGoodDTO {
 		const vehicle = {
 			mount: this.faker.vehicle.model(),
 			mileage: this.faker.number.int({
@@ -75,34 +78,39 @@ export class MakeAuction extends Fabric {
 			totalArea: {
 				value: this.faker.number.float({
 					min: 100,
-					max: 5000 
+					max: 5000,
+					fractionDigits:2
 				}),
 				unit: AreaUnit.SQUARE_METERS
 			},
 			builtArea: {
 				value: this.faker.number.float({
 					min: 0,
-					max: 100 
+					max: 100,
+					fractionDigits:2
 				}),
 				unit: AreaUnit.SQUARE_METERS
 			},
 			privateArea: {
 				value: this.faker.number.float({
 					min: 100,
-					max: 5000 
+					max: 5000,
+					fractionDigits:2
 				}),
 				unit: AreaUnit.SQUARE_METERS
 			},
 			fieldArea: {
 				value: this.faker.number.float({
 					min: 100,
-					max: 5000 
+					max: 5000,
+					fractionDigits:2
 				}),
 				unit: AreaUnit.SQUARE_METERS
 			},
 			debits: this.faker.number.float({
 				min: 0,
-				max: 20000 
+				max: 20000,
+				fractionDigits:2
 			}),
 			allowVisits: this.faker.datatype.boolean(),
 			lawsuit: this.faker.datatype.boolean(),

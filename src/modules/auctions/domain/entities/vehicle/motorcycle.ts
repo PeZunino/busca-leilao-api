@@ -1,24 +1,19 @@
 import z from 'zod';
+import { createMotorcycleValidationSchema } from '@/core/validation/vehicle.validator';
 import { UniqueID } from '../../valueObjects/uniqueId';
-import { baseVehicleInputSchema, Vehicle, VehicleDTO, VehicleProps } from './vehicle';
+import {Vehicle, VehicleProps } from './vehicle';
 
-export type MotorcycleProps = VehicleProps
 
-export type MotorcycleDTO = VehicleDTO
-
-const motorcycleSpecificInputSchema = z.object({});
-
-export const fullMotorcycleSchema = baseVehicleInputSchema.extend(motorcycleSpecificInputSchema.shape);
-
+type MotorcycleProps = VehicleProps
 
 export class Motorcycle extends Vehicle{
 	private constructor(protected readonly props: MotorcycleProps, id?: UniqueID) {
 		super(props, id);
 	}
     
-	public static create(input: MotorcycleDTO, id?: UniqueID): Motorcycle {
+	public static create(input: MotorcycleProps, id?: UniqueID): Motorcycle {
 		try {
-			fullMotorcycleSchema.parse(input);
+			createMotorcycleValidationSchema.parse(input);
 
 			return new Motorcycle({
 				brand:input.brand,
@@ -36,8 +31,7 @@ export class Motorcycle extends Vehicle{
 			}, id);
 		} catch (error: any) {
 			if (error instanceof z.ZodError) {
-				throw new Error(`Motorcycle creation failed: ${error.errors.map(e => e.message)
-					.join(', ')}`);
+				throw new Error(`Zod Motorcycle creation validation failed: ${error}`);
 			}
 
 			throw new Error(`Motorcycle creation failed: ${error.message || 'Unknown error'}`);

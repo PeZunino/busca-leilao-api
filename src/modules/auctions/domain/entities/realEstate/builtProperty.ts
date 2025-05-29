@@ -1,61 +1,42 @@
 import z from 'zod';
-import { Address } from '../../valueObjects/address';
-import { Area, AreaUnit } from '../../valueObjects/area';
-import { Real } from '../../valueObjects/real';
+import { createBuiltPropertyValidationSchema, createRealEstateValidationSchema } from '@/core/validation/real-estate.validator';
 import { UniqueID } from '../../valueObjects/uniqueId';
-import { baseRealEstateInputSchema, baseRealEstateInputSchemaRefine, RealEstate, RealEstateDTO,RealEstateProps } from './realEstate';
-
-export interface BuiltPropertyProps extends RealEstateProps {
+import { RealEstate,RealEstateProps } from './realEstate';
+interface BuiltPropertyProps extends RealEstateProps {
 	hasGarage: boolean;
 	numberOfBedrooms: number;
 }
-
-export interface BuiltPropertyDTO extends RealEstateDTO {
-	hasGarage: boolean;
-	numberOfBedrooms: number;
-}
-
-const builtPropertySpecificInputSchema = z.object({
-	hasGarage: z.boolean(),
-	numberOfBedrooms: z.number()
-		.int()
-		.positive()
-		.min(1, 'Number of bedrooms must be at least 1'),
-});
-
-export const fullBuiltPropertySchema = baseRealEstateInputSchemaRefine(
-	baseRealEstateInputSchema.extend(builtPropertySpecificInputSchema.shape)
-);
 
 export class BuiltProperty extends RealEstate {
 	private constructor(protected readonly props: BuiltPropertyProps, id?: UniqueID) {
 		super(props, id);
 	}
 
-	public static create(input: BuiltPropertyDTO, id?: UniqueID): BuiltProperty {
+	public static create(input: BuiltPropertyProps, id?: UniqueID): BuiltProperty {
 		try {
-			fullBuiltPropertySchema.parse(input);
+			createRealEstateValidationSchema.parse(input);
+
+			createBuiltPropertyValidationSchema.parse(input);
 
 			return new BuiltProperty({
-				address:Address.create(input.address),
+				address:input.address,
 				allowVisits: input.allowVisits,
-				builtArea:Area.create(input.builtArea.value,AreaUnit[input.builtArea.unit]),
-				debits:Real.create(input.debits),
-				fieldArea:Area.create(input.fieldArea.value,AreaUnit[input.fieldArea.unit]),
+				builtArea:input.builtArea,
+				debits:input.debits,
+				fieldArea:input.fieldArea,
 				hasGarage: input.hasGarage,
 				isOccupied: input.isOccupied,
 				lawsuit: input.lawsuit,
 				numberOfBedrooms: input.numberOfBedrooms,
-				privateArea:Area.create(input.privateArea.value,AreaUnit[input.privateArea.unit]),
+				privateArea:input.privateArea,
 				registration: input.registration,
-				totalArea:Area.create(input.totalArea.value,AreaUnit[input.totalArea.unit]),
+				totalArea:input.totalArea,
 				complement: input.complement,
 				distanceToMetro: input.distanceToMetro
 			}, id);
 		} catch (error: any) {
 			if (error instanceof z.ZodError) {
-				throw new Error(`Built Property creation failed: ${error.errors.map(e => e.message)
-					.join(', ')}`);
+				throw new Error(`Zod Built Property creation validation failed: ${error}`);
 			}
 
 			throw new Error(`Built Property failed: ${error.message || 'Unknown error'}`);

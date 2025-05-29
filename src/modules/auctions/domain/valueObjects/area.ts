@@ -26,11 +26,11 @@ export class Area {
 
 	private constructor(private readonly props: AreaProps) {}
 
-	public static create(value: number, unit: AreaUnit): Area {
+	public static create(props:AreaProps): Area {
 		try {
 			const validatedProps = Area.schema.parse({
-				value,
-				unit 
+				value: props.value,
+				unit:props.unit
 			});
 
 			return new Area(validatedProps);

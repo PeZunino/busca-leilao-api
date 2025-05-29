@@ -1,9 +1,10 @@
 import z from 'zod';
-import { CreateCarDTO } from '@/modules/auctions/application/dto/create-car.dto';
+import { createCarValidationSchema } from '@/core/validation/vehicle.validator';
 import { UniqueID } from '../../valueObjects/uniqueId';
-import { baseVehicleInputSchema, Vehicle, VehicleProps } from './vehicle';
+import {Vehicle, VehicleProps } from './vehicle';
 
-export interface CarProps extends VehicleProps { 
+
+interface CarProps extends VehicleProps { 
 	hasAirConditioning: boolean;
 	steeringType: string;
 	hasSpareTire: boolean;
@@ -13,37 +14,16 @@ export interface CarProps extends VehicleProps {
 	type: string; 
 }
 
-
-const carSpecificInputSchema = z.object({
-	hasAirConditioning: z.boolean(),
-	steeringType: z.string()
-		.min(3, 'Steering type must be at least 3 characters'),
-	hasSpareTire: z.boolean(),
-	gearbox: z.string()
-		.min(3, 'Gearbox type must be at least 3 characters'),
-	hasArmor: z.boolean(),
-	numberOfDoors: z.number()
-		.int()
-		.positive()
-		.min(2)
-		.max(5, 'Number of doors must be between 2 and 5'),
-	type: z.string()
-		.min(2, 'Car type must be at least 2 characters'), 
-});
-
-export const fullCarSchema = baseVehicleInputSchema.extend(carSpecificInputSchema.shape);
-
-
 export class Car extends Vehicle{
 
 	private constructor(protected readonly props: CarProps, id?: UniqueID) {
 		super(props, id);
 	}
 	
-	public static create(input: CreateCarDTO, id?: UniqueID): Car { 
+	public static create(input: CarProps, id?: UniqueID): Car { 
 		try {
 		
-			fullCarSchema.parse(input);
+			createCarValidationSchema.parse(input);
 
 			return new Car({
 				brand:input.brand,
@@ -69,8 +49,7 @@ export class Car extends Vehicle{
 			
 		} catch (error: any) {
 			if (error instanceof z.ZodError) {
-				throw new Error(`Car creation failed: ${error.errors.map(e => e.message)
-					.join(', ')}`);
+				throw new Error(`Zod Car creation validation failed: ${error}`);
 			}
 
 			throw new Error(`Car creation failed: ${error.message || 'Unknown error'}`);

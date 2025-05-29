@@ -1,14 +1,23 @@
 import { success } from '@/core/either';
 import { Auction } from '../../domain/entities/auction';
-import { AuctionItem } from '../../domain/entities/auctionItem';
+import { AuctionItem, CreateAuctionItemDTO } from '../../domain/entities/auctionItem';
 import { AuctionOpening } from '../../domain/entities/auctionOpening';
 import { GoodFactory } from '../../domain/factories/good';
 import { Metadata } from '../../domain/valueObjects/metaData';
 import { Real } from '../../domain/valueObjects/real';
 import { UniqueID } from '../../domain/valueObjects/uniqueId';
-import { CreateAuctionDTO } from '../dto/create-auction.dto';
 import { AuctionsRepository } from '../repositories/auctions.repository';
 
+
+
+export interface CreateAuctionDTO{
+	publicationDate :Date     
+	items :CreateAuctionItemDTO[]
+	openDates :Date[]
+	auctioneerId :string        
+	committeeId :string       
+	metaData?:Record<string, string> 
+}
 
 
 export class CreateAuctionUseCase{
@@ -21,12 +30,13 @@ export class CreateAuctionUseCase{
 
 		const items = input.items.map(item=>
 			AuctionItem.create({
-				description:item.description,
-				good:GoodFactory.create(item.good),
-				initialValue: Real.create(item.initialValue),
-				observation: item.observation,
 				origin: item.origin,
-				startingBid: Real.create(item.startingBid)
+				startingBid: Real.create(item.startingBid),
+				description:item.description,
+				observation: item.observation,
+				initialValue: Real.create(item.initialValue),
+				debits: Real.create(item.debits),
+				good:GoodFactory.create(item.good),
 			})
 		);
 
