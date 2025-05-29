@@ -4,7 +4,7 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { makeAuctioneer } from 'test/factories/make-auctioneer';
 import { AppModule } from '@/app.module';
-import { PrismaService } from '@/infra/database/prisma/prisma.service';
+import { PrismaService } from '@/core/database/prisma/prisma.service';
 
 describe('Create Auctioneer (E2E)',()=>{
 	let app: INestApplication;

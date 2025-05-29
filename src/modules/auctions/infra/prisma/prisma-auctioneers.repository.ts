@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { AuctioneersRepository } from '@/modules/auctions/application/repositories/auctioneer.repository';
 import { Auctioneer } from '@/modules/auctions/domain/entities/auctioneer';
-import { PrismaAuctioneerMapper } from '../../../../infra/database/prisma/mappers/prisma-auctioneer-mapper';
-import { PrismaService } from '../../../../infra/database/prisma/prisma.service';
+import { PrismaAuctioneerMapper } from '../../../../core/database/prisma/mappers/prisma-auctioneer-mapper';
+import { PrismaService } from '../../../../core/database/prisma/prisma.service';
 
 @Injectable()
 export class PrismaAuctioneersRepository implements AuctioneersRepository{
