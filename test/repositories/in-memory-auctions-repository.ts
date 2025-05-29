@@ -1,5 +1,5 @@
-import { AuctionsRepository } from '@/domain/auctioneer/application/repositories/auctions.repository';
-import { Auction } from '@/domain/auctioneer/enterprise/entities/auction';
+import { AuctionsRepository } from '@/modules/auctions/application/repositories/auctions.repository';
+import { Auction } from '@/modules/auctions/domain/entities/auction';
 
 export class InMemoryAuctionsRepository implements AuctionsRepository{
 	public items:Auction[] = [];

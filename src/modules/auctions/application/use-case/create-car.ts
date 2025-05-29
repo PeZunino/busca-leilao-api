@@ -1,5 +1,6 @@
 import { success } from '@/core/either';
-import { Car, CarDTO } from '../../enterprise/entities/vehicle/car';
+import { Car } from '../../domain/entities/vehicle/car';
+import { CreateCarDTO } from '../dto/create-car.dto';
 import { CarsRepository } from '../repositories/car.repository';
 
 export class CreateCarUseCase{
@@ -7,7 +8,7 @@ export class CreateCarUseCase{
 		private carRepository: CarsRepository
 	){}
 
-	async execute(props:CarDTO){
+	async execute(props:CreateCarDTO){
 		const car = Car.create({
 			brand: props.brand,
 			color: props.color,

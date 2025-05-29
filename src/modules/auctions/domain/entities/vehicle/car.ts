@@ -1,6 +1,7 @@
 import z from 'zod';
+import { CreateCarDTO } from '@/modules/auctions/application/dto/create-car.dto';
 import { UniqueID } from '../../valueObjects/uniqueId';
-import { baseVehicleInputSchema, Vehicle, VehicleDTO, VehicleProps } from './vehicle';
+import { baseVehicleInputSchema, Vehicle, VehicleProps } from './vehicle';
 
 export interface CarProps extends VehicleProps { 
 	hasAirConditioning: boolean;
@@ -12,15 +13,6 @@ export interface CarProps extends VehicleProps {
 	type: string; 
 }
 
-export interface CarDTO extends VehicleDTO{ 
-	hasAirConditioning: boolean;
-	steeringType: string;
-	hasSpareTire: boolean;
-	gearbox: string;
-	hasArmor: boolean;
-	numberOfDoors: number;
-	type: string;
-}
 
 const carSpecificInputSchema = z.object({
 	hasAirConditioning: z.boolean(),
@@ -48,7 +40,7 @@ export class Car extends Vehicle{
 		super(props, id);
 	}
 	
-	public static create(input: CarDTO, id?: UniqueID): Car { 
+	public static create(input: CreateCarDTO, id?: UniqueID): Car { 
 		try {
 		
 			fullCarSchema.parse(input);

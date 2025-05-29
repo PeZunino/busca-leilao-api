@@ -16,20 +16,7 @@ export interface VehicleProps{
 	fuel: string;
 }
 
-export interface VehicleDTO { 
-	mount: string;
-	mileage: number;
-	hasKeys: boolean;
-	licensePlate: string;
-	color: string;
-	brand: string;
-	model: string;
-	version: string;
-	year: Date;
-	yearModel: Date;
-	forCirculation: boolean;
-	fuel: string;
-}
+
 
 export const baseVehicleInputSchema = z.object({
 

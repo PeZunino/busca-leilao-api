@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { Committee } from '@/domain/auctioneer/enterprise/entities/committee';
+import { Committee } from '@/modules/auctions/domain/entities/committee';
 
 export class PrismaCommitteeMapper{
 	static toPrisma(committee:Committee):Prisma.CommitteeCreateInput{

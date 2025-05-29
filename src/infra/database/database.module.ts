@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AuctioneersRepository } from '@/domain/auctioneer/application/repositories/auctioneer.repository';
+import { AuctioneersRepository } from '@/modules/auctions/application/repositories/auctioneer.repository';
+import { PrismaAuctioneersRepository } from '../../modules/auctions/infra/prisma/prisma-auctioneers.repository';
 import { PrismaService } from './prisma/prisma.service';
-import { PrismaAuctioneersRepository } from './prisma/repositories/prisma-auctioneers.repository';
 
 @Module({
 	providers:[

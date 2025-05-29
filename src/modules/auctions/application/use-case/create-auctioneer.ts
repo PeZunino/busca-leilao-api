@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Either, success } from '@/core/either';
-import { Auctioneer } from '../../enterprise/entities/auctioneer';
+import { Auctioneer } from '../../domain/entities/auctioneer';
 import { AuctioneersRepository } from '../repositories/auctioneer.repository';
 
 interface CreateAuctioneerUseCaseRequest{

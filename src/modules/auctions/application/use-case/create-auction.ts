@@ -1,7 +1,7 @@
 import { success } from '@/core/either';
-import { Auction } from '../../enterprise/entities/auction';
-import { CreateAuctionItemDTO } from '../../enterprise/entities/auctionItem';
-import { UniqueID } from '../../enterprise/valueObjects/uniqueId';
+import { Auction } from '../../domain/entities/auction';
+import { UniqueID } from '../../domain/valueObjects/uniqueId';
+import { CreateAuctionItemDTO } from '../dto/create-auction-item.dto';
 import { AuctionsRepository } from '../repositories/auctions.repository';
 
 interface CreateAuctionUseCaseRequest{

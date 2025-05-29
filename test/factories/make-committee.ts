@@ -1,5 +1,5 @@
 import { fakerPT_BR as faker } from '@faker-js/faker';
-import { Committee } from '@/domain/auctioneer/enterprise/entities/committee';
+import { Committee } from '@/modules/auctions/domain/entities/committee';
 
 export function makeCommittee():Committee{
 	return Committee.create({name: faker.company.name()});

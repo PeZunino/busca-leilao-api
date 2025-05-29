@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { success } from '@/core/either';
-import { Committee } from '../../enterprise/entities/committee';
+import { Committee } from '../../domain/entities/committee';
 import { CommitteeRepository } from '../repositories/committee.repository';
 
 @Injectable()

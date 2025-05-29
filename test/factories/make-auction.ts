@@ -1,7 +1,7 @@
-import { AuctionPropsInput } from '@/domain/auctioneer/enterprise/entities/auction';
-import { GoodDTO, GoodType } from '@/domain/auctioneer/enterprise/entities/good';
-import { AreaUnit } from '@/domain/auctioneer/enterprise/valueObjects/area';
-import { UniqueID } from '@/domain/auctioneer/enterprise/valueObjects/uniqueId';
+import { AuctionPropsInput } from '@/modules/auctions/domain/entities/auction';
+import { GoodDTO, GoodType } from '@/modules/auctions/domain/entities/good';
+import { AreaUnit } from '@/modules/auctions/domain/valueObjects/area';
+import { UniqueID } from '@/modules/auctions/domain/valueObjects/uniqueId';
 import { Fabric } from './fabric';
 
 export class MakeAuction extends Fabric {

@@ -1,4 +1,4 @@
-import { AuctioneerInput } from '@/domain/auctioneer/enterprise/entities/auctioneer';
+import { AuctioneerInput } from '@/modules/auctions/domain/entities/auctioneer';
 import { Fabric } from './fabric';
 
 

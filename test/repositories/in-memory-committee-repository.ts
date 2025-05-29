@@ -1,5 +1,5 @@
-import { CommitteeRepository } from '@/domain/auctioneer/application/repositories/committee.repository';
-import { Committee } from '@/domain/auctioneer/enterprise/entities/committee';
+import { CommitteeRepository } from '@/modules/auctions/application/repositories/committee.repository';
+import { Committee } from '@/modules/auctions/domain/entities/committee';
 
 export class InMemoryCommitteeRepository implements CommitteeRepository{
 	public items: Committee[] = [];

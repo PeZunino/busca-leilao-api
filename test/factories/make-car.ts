@@ -1,4 +1,4 @@
-import { Car } from '@/domain/auctioneer/enterprise/entities/vehicle/car';
+import { Car } from '@/modules/auctions/domain/entities/vehicle/car';
 import { Fabric } from './fabric';
 
 export class MakeCar extends Fabric{

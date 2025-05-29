@@ -1,5 +1,5 @@
-import { AuctioneersRepository } from '@/domain/auctioneer/application/repositories/auctioneer.repository';
-import { Auctioneer } from '@/domain/auctioneer/enterprise/entities/auctioneer';
+import { AuctioneersRepository } from '@/modules/auctions/application/repositories/auctioneer.repository';
+import { Auctioneer } from '@/modules/auctions/domain/entities/auctioneer';
 
 export class InMemoryAuctioneerRepository implements AuctioneersRepository{
 	

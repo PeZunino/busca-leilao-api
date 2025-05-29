@@ -1,4 +1,4 @@
-import { UniqueID } from '@/domain/auctioneer/enterprise/valueObjects/uniqueId';
+import { UniqueID } from '@/modules/auctions/domain/valueObjects/uniqueId';
 
 export abstract class Entity<Props> {
 	private _id: UniqueID;

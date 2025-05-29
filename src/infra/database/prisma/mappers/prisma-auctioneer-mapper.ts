@@ -1,5 +1,5 @@
 import { Prisma } from '@prisma/client';
-import { Auctioneer } from '@/domain/auctioneer/enterprise/entities/auctioneer';
+import { Auctioneer } from '@/modules/auctions/domain/entities/auctioneer';
 
 export class PrismaAuctioneerMapper{
 	static toPrisma(auctioneer:Auctioneer):Prisma.AuctioneerCreateInput{
