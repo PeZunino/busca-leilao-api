@@ -44,35 +44,11 @@ export class Auction extends AggregateRoot<AuctionProps> {
 				initialValue: item.initialValue
 			};
 		
-			switch(item.itemType ){
-				case 'car':
-					return AuctionItem.create({
-						itemType: 'car',
-						...itemProps,
-						good: item.good
-					}, auctionId);
-		
-				case 'motorcycle':
-					return AuctionItem.create({
-						itemType: 'motorcycle',
-						...itemProps,
-						good: item.good
-					}, auctionId);
-		
-				case 'built':
-					return AuctionItem.create({
-						itemType: 'built',
-						...itemProps,
-						good: item.good
-					}, auctionId);
-		
-				case 'unbuilt':
-					return AuctionItem.create({
-						itemType: 'unbuilt',
-						...itemProps,
-						good: item.good
-					}, auctionId);
-			}
+			return AuctionItem.create({
+				...itemProps,
+				good: item.good
+			}, auctionId);
+			
 		});
 
 

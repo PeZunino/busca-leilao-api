@@ -1,8 +1,5 @@
 import { AuctionPropsInput } from '@/domain/auctioneer/enterprise/entities/auction';
-import { BuiltPropertyDTO } from '@/domain/auctioneer/enterprise/entities/realEstate/builtProperty';
-import { UnbuiltPropertyDTO } from '@/domain/auctioneer/enterprise/entities/realEstate/unbuiltProperty';
-import { CarDTO } from '@/domain/auctioneer/enterprise/entities/vehicle/car';
-import { MotorcycleDTO } from '@/domain/auctioneer/enterprise/entities/vehicle/motorcycle';
+import { GoodDTO, GoodType } from '@/domain/auctioneer/enterprise/entities/good';
 import { AreaUnit } from '@/domain/auctioneer/enterprise/valueObjects/area';
 import { UniqueID } from '@/domain/auctioneer/enterprise/valueObjects/uniqueId';
 import { Fabric } from './fabric';
@@ -16,11 +13,9 @@ export class MakeAuction extends Fabric {
 		const committeeId = new UniqueID()
 			.toString();
 
-		const itemType = this.faker.helpers.arrayElement([
-			'car', 'motorcycle', 'built', 'unbuilt'
-		]) as 'car' | 'motorcycle' | 'built' | 'unbuilt';
+		const type = this.faker.helpers.arrayElement(Object.values(GoodType));
 
-		const good = this.makeGood(itemType);
+		const good = this.makeGood(type);
 
 		const item = {
 			description: this.faker.lorem.sentence(),
@@ -36,7 +31,7 @@ export class MakeAuction extends Fabric {
 				fractionDigits: 2
 			}),
 			observation: this.faker.lorem.sentence(),
-			itemType,
+			type,
 			good
 		};
 
@@ -53,8 +48,7 @@ export class MakeAuction extends Fabric {
 		};
 	}
 
-	private makeGood(type: 'car' | 'motorcycle' | 'built' | 'unbuilt'): CarDTO | MotorcycleDTO | BuiltPropertyDTO | UnbuiltPropertyDTO {
-		
+	private makeGood(type: GoodType): GoodDTO {
 		const vehicle = {
 			mount: this.faker.vehicle.model(),
 			mileage: this.faker.number.int({
@@ -72,7 +66,8 @@ export class MakeAuction extends Fabric {
 			forCirculation: this.faker.datatype.boolean(),
 			fuel: this.faker.helpers.arrayElement([
 				'gasoline', 'ethanol', 'diesel', 'electric'
-			])
+			]),
+			type: this.faker.vehicle.type()
 		};
     
 		const realEstate = {
@@ -128,43 +123,56 @@ export class MakeAuction extends Fabric {
 		};
     
 		switch (type) {
-			case 'car':
+			case GoodType.CAR:
 				return {
-					...vehicle,
-					hasAirConditioning: this.faker.datatype.boolean(),
-					steeringType: this.faker.vehicle.type(),
-					hasSpareTire: this.faker.datatype.boolean(),
-					gearbox: this.faker.helpers.arrayElement([
-						'manual', 'automatic'
-					]),
-					hasArmor: this.faker.datatype.boolean(),
-					numberOfDoors: this.faker.number.int({
-						min: 2,
-						max: 5 
-					}),
-					type: this.faker.vehicle.type(),
+					data:{
+						
+						...vehicle,
+						hasAirConditioning: this.faker.datatype.boolean(),
+						steeringType: this.faker.vehicle.type(),
+						hasSpareTire: this.faker.datatype.boolean(),
+						gearbox: this.faker.helpers.arrayElement([
+							'manual', 'automatic'
+						]),
+						hasArmor: this.faker.datatype.boolean(),
+						numberOfDoors: this.faker.number.int({
+							min: 2,
+							max: 5 
+						}),
+					},
+					type:GoodType.CAR
 				};
 
-			case 'motorcycle':
-				return {...vehicle,};
-
-			case 'built':
+			case GoodType.MOTORCYCLE:
 				return {
-					...realEstate,
-					hasGarage: this.faker.datatype.boolean(),
-					numberOfBedrooms: this.faker.number.int({
-						min: 1,
-						max: 10 
-					})
+					data:{...vehicle},
+					type:GoodType.MOTORCYCLE
 				};
 
-			case 'unbuilt':
+			case GoodType.BUILT_PROPERTY:
 				return {
-					...realEstate,
-					isUrban: this.faker.datatype.boolean(),
-					hasWaterAccess: this.faker.datatype.boolean()
+					data:{
+						...realEstate,
+						hasGarage: this.faker.datatype.boolean(),
+						numberOfBedrooms: this.faker.number.int({
+							min: 1,
+							max: 10 
+						})
+					},
+					type: GoodType.BUILT_PROPERTY
+				};
+
+			case GoodType.UNBUILT_PROPERTY:
+				return {
+					data:{
+						...realEstate,
+						isUrban: this.faker.datatype.boolean(),
+						hasWaterAccess: this.faker.datatype.boolean()
+					},
+					type:GoodType.UNBUILT_PROPERTY
 				};
 		}
+	
 	}
 
 }

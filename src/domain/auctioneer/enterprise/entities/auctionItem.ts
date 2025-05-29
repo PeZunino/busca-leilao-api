@@ -2,10 +2,11 @@ import { z } from 'zod';
 import { Entity } from '../../../../core/shared/entity';
 import { Real } from '../valueObjects/real';
 import { UniqueID } from '../valueObjects/uniqueId';
-import { BuiltProperty, BuiltPropertyDTO, BuiltPropertyProps, fullBuiltPropertySchema } from './realEstate/builtProperty';
-import { fullUnbuiltPropertySchema, UnbuiltProperty, UnbuiltPropertyDTO, UnbuiltPropertyProps } from './realEstate/unbuiltProperty';
-import { Car, CarDTO, CarProps, fullCarSchema } from './vehicle/car';
-import { fullMotorcycleSchema, Motorcycle, MotorcycleDTO, MotorcycleProps } from './vehicle/motorcycle';
+import { GoodDTO, GoodFactory, GoodObject, GoodType } from './good';
+import { fullBuiltPropertySchema } from './realEstate/builtProperty';
+import { fullUnbuiltPropertySchema,} from './realEstate/unbuiltProperty';
+import { fullCarSchema } from './vehicle/car';
+import { fullMotorcycleSchema, } from './vehicle/motorcycle';
 
 interface AuctionItemProps{
 	startingBid: Real; 
@@ -13,19 +14,45 @@ interface AuctionItemProps{
 	observation: string;
 	origin:string
 	initialValue: Real; 
-	good:CarProps | MotorcycleProps | BuiltPropertyProps | UnbuiltPropertyProps
+	good:GoodObject
 }
 
 export interface CreateAuctionItemDTO{
-	itemType: 'car' | 'motorcycle' | 'built' | 'unbuilt'
 	origin:string
 	startingBid: number; 
 	description: string;
 	observation: string;
 	initialValue: number; 
-	good:CarDTO | MotorcycleDTO | BuiltPropertyDTO | UnbuiltPropertyDTO
-  
+	good: GoodDTO;  
 }
+
+
+const carSchema = z.object({
+	type: z.literal(GoodType.CAR),
+	data: fullCarSchema
+});
+
+const motorcycleSchema = z.object({
+	type: z.literal(GoodType.MOTORCYCLE),
+	data: fullMotorcycleSchema
+});
+
+const builtPropertySchema = z.object({
+	type: z.literal(GoodType.BUILT_PROPERTY),
+	data: fullBuiltPropertySchema
+});
+
+const unbuiltPropertySchema = z.object({
+	type: z.literal(GoodType.UNBUILT_PROPERTY),
+	data: fullUnbuiltPropertySchema
+});
+
+export const goodDTOSchema = z.discriminatedUnion('type', [
+	carSchema,
+	motorcycleSchema,
+	builtPropertySchema,
+	unbuiltPropertySchema
+]);
 
 const baseSchema = {
 	origin: z.string()
@@ -36,30 +63,10 @@ const baseSchema = {
 	observation: z.string()
 		.optional(),
 	initialValue: z.number(),
+	good: goodDTOSchema 
 };
 
-export const auctionItemInputSchema = z.discriminatedUnion('itemType', [
-	z.object({
-		itemType: z.literal('car'),
-		good: fullCarSchema,
-		...baseSchema,
-	}),
-	z.object({
-		itemType: z.literal('motorcycle'),
-		good: fullMotorcycleSchema,
-		...baseSchema,
-	}),
-	z.object({
-		itemType: z.literal('built'),
-		good: fullBuiltPropertySchema,
-		...baseSchema,
-	}),
-	z.object({
-		itemType: z.literal('unbuilt'),
-		good: fullUnbuiltPropertySchema,
-		...baseSchema,
-	}),
-]);
+export const auctionItemInputSchema = z.object(baseSchema);
 
 export class AuctionItem extends Entity<AuctionItemProps>{
 	protected constructor(protected readonly props: AuctionItemProps, id?: UniqueID) {
@@ -70,32 +77,9 @@ export class AuctionItem extends Entity<AuctionItemProps>{
 		try {
           
 			auctionItemInputSchema.parse(input);
-			
-			let good: Car | Motorcycle | BuiltProperty | UnbuiltProperty;
 
-			switch(input.itemType ){
-				case 'car':
-					good = Car.create(input.good as CarDTO);
-
-					break;
-
-				case 'motorcycle':
-					good = Motorcycle.create(input.good as MotorcycleDTO);
-
-					break;
-
-				case 'built':
-					good = BuiltProperty.create(input.good as BuiltPropertyDTO);
-
-					break;
-
-				case 'unbuilt':
-					
-					good = UnbuiltProperty.create(input.good as UnbuiltPropertyDTO);
-
-					break;
-			}
-
+			const good = GoodFactory.create(input.good);
+		
 			return new AuctionItem({
 				startingBid: Real.create(input.startingBid),
 				initialValue: Real.create(input.initialValue),
