@@ -2,10 +2,10 @@ import { z } from 'zod';
 import { Entity } from '../../../../core/shared/entity';
 import { Real } from '../valueObjects/real';
 import { UniqueID } from '../valueObjects/uniqueId';
-import { BuiltPropertyDTO, BuiltPropertyProps, fullBuiltPropertySchema } from './realEstate/builtProperty';
-import { fullUnbuiltPropertySchema, UnbuiltPropertyDTO, UnbuiltPropertyProps } from './realEstate/unbuiltProperty';
-import { CarDTO, CarProps, fullCarSchema } from './vehicle/car';
-import { fullMotorcycleSchema, MotorcycleDTO, MotorcycleProps } from './vehicle/motorcycle';
+import { BuiltProperty, BuiltPropertyDTO, BuiltPropertyProps, fullBuiltPropertySchema } from './realEstate/builtProperty';
+import { fullUnbuiltPropertySchema, UnbuiltProperty, UnbuiltPropertyDTO, UnbuiltPropertyProps } from './realEstate/unbuiltProperty';
+import { Car, CarDTO, CarProps, fullCarSchema } from './vehicle/car';
+import { fullMotorcycleSchema, Motorcycle, MotorcycleDTO, MotorcycleProps } from './vehicle/motorcycle';
 
 interface AuctionItemProps{
 	startingBid: Real; 
@@ -16,7 +16,7 @@ interface AuctionItemProps{
 	good:CarProps | MotorcycleProps | BuiltPropertyProps | UnbuiltPropertyProps
 }
 
-export interface CreateAuctionDTO{
+export interface CreateAuctionItemDTO{
 	itemType: 'car' | 'motorcycle' | 'built' | 'unbuilt'
 	origin:string
 	startingBid: number; 
@@ -66,18 +66,43 @@ export class AuctionItem extends Entity<AuctionItemProps>{
 		super(props, id);
 	}
 
-	public static create(input:CreateAuctionDTO, id?:UniqueID){
+	public static create(input:CreateAuctionItemDTO, id?:UniqueID){
 		try {
           
-			const validatedProps = auctionItemInputSchema.parse(input);
-    
+			auctionItemInputSchema.parse(input);
+			
+			let good: Car | Motorcycle | BuiltProperty | UnbuiltProperty;
+
+			switch(input.itemType ){
+				case 'car':
+					good = Car.create(input.good as CarDTO);
+
+					break;
+
+				case 'motorcycle':
+					good = Motorcycle.create(input.good as MotorcycleDTO);
+
+					break;
+
+				case 'built':
+					good = BuiltProperty.create(input.good as BuiltPropertyDTO);
+
+					break;
+
+				case 'unbuilt':
+					
+					good = UnbuiltProperty.create(input.good as UnbuiltPropertyDTO);
+
+					break;
+			}
+
 			return new AuctionItem({
-				startingBid: Real.create(validatedProps.startingBid),
-				initialValue: Real.create(validatedProps.initialValue),
-				description: validatedProps.description,
-				observation: validatedProps.observation ?? '',
-				origin: validatedProps.origin,
-				good: validatedProps.good,
+				startingBid: Real.create(input.startingBid),
+				initialValue: Real.create(input.initialValue),
+				description: input.description,
+				observation: input.observation ?? '',
+				origin: input.origin,
+				good,
 			}, id);
 
 		} catch (error: any) {
