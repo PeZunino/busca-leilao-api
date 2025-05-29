@@ -1,22 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { Either, success } from '@/core/either';
 import { Auctioneer } from '../../domain/entities/auctioneer';
+import { Address } from '../../domain/valueObjects/address';
+import { Email } from '../../domain/valueObjects/email';
+import { PhoneNumber } from '../../domain/valueObjects/phone';
+import { Website } from '../../domain/valueObjects/website';
+import { CreateAuctioneerUseCaseRequest } from '../dto/create-auctioneer.dto';
 import { AuctioneersRepository } from '../repositories/auctioneer.repository';
-
-interface CreateAuctioneerUseCaseRequest{
-	name:string
-	registrationCode:string 
-	phoneNumber:string 
-	email:string
-	street:string 
-	number:string 
-	cep:string
-	neighborhood:string 
-	city:string
-	state:string
-	websites:string[]
-}
-
 
 type CreateAuctioneerUseCaseResponse = Either<null,{auctioneer:Auctioneer}>
 
@@ -28,21 +18,28 @@ export class CreateAuctioneerUseCase{
 	){}
 
 	async execute(props:CreateAuctioneerUseCaseRequest):Promise<CreateAuctioneerUseCaseResponse>{
-		
+		const email = Email.create(props.email); 
+
+		const phoneNumber = PhoneNumber.create(props.phoneNumber); 
+
+		const address = Address.create({
+			cep: props.cep,
+			city: props.city,
+			neighborhood: props.neighborhood,
+			number: props.number,
+			state: props.state,
+			street: props.street,
+		});
+
+		const websites = props.websites.map(url => Website.create(url));
+ 
 		const auctioneer = Auctioneer.create({
-			address: {
-				cep:props.cep,
-				city:props.city,
-				neighborhood:props.neighborhood,
-				number:props.number,
-				state:props.state,
-				street:props.street,
-			},
-			email: props.email,
+			address,
+			email,
 			name:props.name,
-			phoneNumber: props.phoneNumber,
+			phoneNumber,
 			registrationCode:props.registrationCode,
-			websites:props.websites
+			websites
 		});
 
 		await this.auctioneersRepository.create(auctioneer);

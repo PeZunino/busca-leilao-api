@@ -33,29 +33,15 @@ interface AddressProps{
 }
 
 export class Auctioneer extends AggregateRoot<Props>{
-	public static create(props:AuctioneerInput){
-		const email = Email.create(props.email); 
+	public static create(props:Props){
 
-		const phoneNumber = PhoneNumber.create(props.phoneNumber); 
-
-		const address = Address.create({
-			cep: props.address.cep,
-			city: props.address.city,
-			neighborhood: props.address.neighborhood,
-			number: props.address.number,
-			state: props.address.state,
-			street: props.address.street,
-		});
-
-		const websites = props.websites.map(url => Website.create(url)); 
-    
 		return new Auctioneer({
-			address,
-			email,
+			address: props.address,
+			email:props.email,
 			name:props.name,
-			phoneNumber,
+			phoneNumber:props.phoneNumber,
 			registrationCode:props.registrationCode,
-			websites
+			websites:props.websites
 		});
 	}
 

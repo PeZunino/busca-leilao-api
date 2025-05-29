@@ -1,35 +1,49 @@
 import { success } from '@/core/either';
 import { Auction } from '../../domain/entities/auction';
+import { AuctionItem } from '../../domain/entities/auctionItem';
+import { AuctionOpening } from '../../domain/entities/auctionOpening';
+import { GoodFactory } from '../../domain/entities/good';
+import { Metadata } from '../../domain/valueObjects/metaData';
+import { Real } from '../../domain/valueObjects/real';
 import { UniqueID } from '../../domain/valueObjects/uniqueId';
-import { CreateAuctionItemDTO } from '../dto/create-auction-item.dto';
+import { CreateAuctionDTO } from '../dto/create-auction.dto';
 import { AuctionsRepository } from '../repositories/auctions.repository';
 
-interface CreateAuctionUseCaseRequest{
-	publicationDate :Date     
-	items :CreateAuctionItemDTO[]
-	openDates :Date[]
-	auctioneerId :string        
-	committeeId :string       
-	metaData?:Record<string, string> 
-}
+
 
 export class CreateAuctionUseCase{
 	
 	constructor(private auctionsRepository:AuctionsRepository){}
   
-	async execute({
-		auctioneerId,committeeId,items,openDates,publicationDate,metaData
-	}:CreateAuctionUseCaseRequest){
+	async execute(input:CreateAuctionDTO){
 
 		const auctionId = new UniqueID();
 
+		const items = input.items.map(item=>
+			AuctionItem.create({
+				description:item.description,
+				good:GoodFactory.create(item.good),
+				initialValue: Real.create(item.initialValue),
+				observation: item.observation,
+				origin: item.origin,
+				startingBid: Real.create(item.startingBid)
+			})
+		);
+
+		const openDates = input.openDates.map(date=>
+			AuctionOpening.create({
+				auctionId,
+				date
+			})
+		);
+
 		const auction = Auction.create({
-			publicationDate,
-			metaData,
+			publicationDate: input.publicationDate,
+			metaData: input.metaData ? Metadata.create(input.metaData) : undefined,
 			items,
 			openDates,
-			auctioneerId,
-			committeeId
+			auctioneerId: new UniqueID(input.auctioneerId),
+			committeeId: new UniqueID(input.committeeId)
 		}, auctionId);
     
 		await this.auctionsRepository.create(auction);
