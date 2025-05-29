@@ -16,5 +16,16 @@ export class PrismaAuctioneersRepository implements AuctioneersRepository{
 
 		await this.prisma.auctioneer.create({data});
 	}
+
+	async findById(id: string): Promise<Auctioneer | null> {
+		const data = await this.prisma.auctioneer.findUnique({where:{id}});
+
+		if(!data){
+			return null;
+		}
+
+		return PrismaAuctioneerMapper.toDomain(data);
+
+	}
   
 }

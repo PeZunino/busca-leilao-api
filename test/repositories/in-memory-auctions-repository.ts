@@ -7,4 +7,13 @@ export class InMemoryAuctionsRepository implements AuctionsRepository{
 	async create(auction:Auction):Promise<void>{
 		this.items.push(auction);
 	}
+	async findById(id: string): Promise<Auction | null> {
+		const auction = this.items.find(e=>e.id.toString() === id);
+
+		if(!auction){
+			return null; 
+		}
+
+		return auction;
+	}
 }

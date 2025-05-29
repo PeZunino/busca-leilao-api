@@ -1,3 +1,4 @@
+import { Injectable } from '@nestjs/common';
 import { success } from '@/core/either';
 import { Auction } from '../../domain/entities/auction';
 import { AuctionItem, CreateAuctionItemDTO } from '../../domain/entities/auctionItem';
@@ -20,12 +21,14 @@ export interface CreateAuctionDTO{
 }
 
 
+@Injectable()
 export class CreateAuctionUseCase{
 	
 	constructor(private auctionsRepository:AuctionsRepository){}
   
 	async execute(input:CreateAuctionDTO){
 
+		
 		const auctionId = new UniqueID();
 
 		const items = input.items.map(item=>

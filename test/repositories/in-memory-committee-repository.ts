@@ -7,4 +7,13 @@ export class InMemoryCommitteeRepository implements CommitteeRepository{
 	async create(committee: Committee): Promise<void> {
 		this.items.push(committee);
 	}
+	async findById(id: string): Promise<Committee | null> {
+		const committee = this.items.find(e=>e.id.toString() === id);
+	
+		if(!committee){
+			return null; 
+		}
+	
+		return committee;
+	}
 }
