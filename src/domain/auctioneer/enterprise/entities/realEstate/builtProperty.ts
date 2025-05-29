@@ -1,10 +1,9 @@
 import z from 'zod';
-import { applyRealEstateTransformsAndRefines } from '@/shared/realEstateSchema';
 import { Address } from '../../valueObjects/address';
 import { Area, AreaUnit } from '../../valueObjects/area';
 import { Real } from '../../valueObjects/real';
 import { UniqueID } from '../../valueObjects/uniqueId';
-import { baseRealEstateInputSchema, RealEstate, RealEstateDTO,RealEstateProps } from './realEstate';
+import { baseRealEstateInputSchema, baseRealEstateInputSchemaRefine, RealEstate, RealEstateDTO,RealEstateProps } from './realEstate';
 
 export interface BuiltPropertyProps extends RealEstateProps {
 	hasGarage: boolean;
@@ -24,7 +23,7 @@ const builtPropertySpecificInputSchema = z.object({
 		.min(1, 'Number of bedrooms must be at least 1'),
 });
 
-export const fullBuiltPropertySchema = applyRealEstateTransformsAndRefines(
+export const fullBuiltPropertySchema = baseRealEstateInputSchemaRefine(
 	baseRealEstateInputSchema.extend(builtPropertySpecificInputSchema.shape)
 );
 

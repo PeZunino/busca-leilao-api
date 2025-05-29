@@ -1,10 +1,9 @@
 import z from 'zod';
-import { applyRealEstateTransformsAndRefines } from '@/shared/realEstateSchema';
 import { Address } from '../../valueObjects/address';
 import { Area, AreaUnit } from '../../valueObjects/area';
 import { Real } from '../../valueObjects/real';
 import { UniqueID } from '../../valueObjects/uniqueId';
-import { baseRealEstateInputSchema, RealEstate, RealEstateDTO,RealEstateProps } from './realEstate';
+import { baseRealEstateInputSchema, baseRealEstateInputSchemaRefine, RealEstate, RealEstateDTO,RealEstateProps } from './realEstate';
 
 export interface UnbuiltPropertyProps extends RealEstateProps {
 	isUrban: boolean;
@@ -34,7 +33,7 @@ const unbuiltPropertyRefines = (schema: z.ZodSchema<any>) => schema.refine(data 
 
 
 export const fullUnbuiltPropertySchema = unbuiltPropertyRefines(
-	applyRealEstateTransformsAndRefines(
+	baseRealEstateInputSchemaRefine(
 		baseRealEstateInputSchema.extend(unbuiltPropertySpecificInputSchema.shape)
 	)
 );

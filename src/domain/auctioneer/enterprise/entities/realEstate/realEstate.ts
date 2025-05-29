@@ -85,6 +85,25 @@ export const baseRealEstateInputSchema = z.object({
 		.optional(),
 });
 
+export function baseRealEstateInputSchemaRefine(baseSchema:z.ZodObject<any>){
+	return baseSchema.refine((data) => {
+			
+		return data.builtArea.toSquareMeters() <= data.totalArea.toSquareMeters();
+	}, {
+		message: 'Built area cannot be greater than total area',
+		path: [
+			'builtArea'
+		],
+	})
+		.refine((data) => {
+			return data.privateArea.toSquareMeters() <= data.totalArea.toSquareMeters();
+		}, {
+			message: 'Private area cannot be greater than total area',
+			path: [
+				'privateArea'
+			],
+		});
+}
 
 export abstract class RealEstate extends Entity<RealEstateProps> { 
 	protected constructor(protected readonly props: RealEstateProps, id?: UniqueID) {
