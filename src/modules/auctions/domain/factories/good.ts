@@ -1,8 +1,8 @@
 import { CreateGoodDTO } from '../../application/dto/create-good.dto';
-import { BuiltProperty } from './realEstate/builtProperty';
-import { UnbuiltProperty } from './realEstate/unbuiltProperty';
-import { Car } from './vehicle/car';
-import { Motorcycle} from './vehicle/motorcycle';
+import { BuiltProperty } from '../entities/realEstate/builtProperty';
+import { UnbuiltProperty } from '../entities/realEstate/unbuiltProperty';
+import { Car } from '../entities/vehicle/car';
+import { Motorcycle} from '../entities/vehicle/motorcycle';
 
 export enum GoodType {
 	CAR = 'car',

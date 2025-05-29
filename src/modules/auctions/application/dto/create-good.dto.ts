@@ -1,7 +1,7 @@
-import { GoodType } from '../../domain/entities/good';
 import { BuiltPropertyDTO } from '../../domain/entities/realEstate/builtProperty';
 import { UnbuiltPropertyDTO } from '../../domain/entities/realEstate/unbuiltProperty';
 import { MotorcycleDTO } from '../../domain/entities/vehicle/motorcycle';
+import { GoodType } from '../../domain/factories/good';
 import { CreateCarDTO } from './create-car.dto';
 
 export type CreateGoodDTO = 

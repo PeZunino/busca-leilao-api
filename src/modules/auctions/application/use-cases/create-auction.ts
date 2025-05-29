@@ -2,7 +2,7 @@ import { success } from '@/core/either';
 import { Auction } from '../../domain/entities/auction';
 import { AuctionItem } from '../../domain/entities/auctionItem';
 import { AuctionOpening } from '../../domain/entities/auctionOpening';
-import { GoodFactory } from '../../domain/entities/good';
+import { GoodFactory } from '../../domain/factories/good';
 import { Metadata } from '../../domain/valueObjects/metaData';
 import { Real } from '../../domain/valueObjects/real';
 import { UniqueID } from '../../domain/valueObjects/uniqueId';

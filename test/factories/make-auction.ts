@@ -1,5 +1,5 @@
 import { AuctionPropsInput } from '@/modules/auctions/domain/entities/auction';
-import { GoodDTO, GoodType } from '@/modules/auctions/domain/entities/good';
+import { GoodDTO, GoodType } from '@/modules/auctions/domain/factories/good';
 import { AreaUnit } from '@/modules/auctions/domain/valueObjects/area';
 import { UniqueID } from '@/modules/auctions/domain/valueObjects/uniqueId';
 import { Fabric } from './fabric';

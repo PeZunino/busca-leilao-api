@@ -1,19 +1,20 @@
 import { BadRequestException, Body, Controller, Post } from '@nestjs/common';
 import { z } from 'zod';
-import { CreateAuctioneerUseCase } from '@/modules/auctions/application/use-case/create-auctioneer';
-import { ZodValidationPipe } from '../pipes/zod-validation-pipe';
+import { CreateAuctioneerUseCase } from '@/modules/auctions/application/use-cases/create-auctioneer';
+import { ZodValidationPipe } from '../../../../../infra/pipes/zod-validation-pipe';
 
 const createAuctioneerBodySchema = z.object({
 	name: z.string(),
 	registrationCode: z.string(),
 	phone: z.string(),
 	email: z.string(),
-	website: z.string(),
+	websites: z.array(z.string()),
 	street:z.string(),
 	number:z.string(),
 	cep:z.string(),
 	neighborhood: z.string(),
 	city: z.string(),
+	state:z.string()
 });
 
 
@@ -33,7 +34,7 @@ export class CreateAuctioneerController{
 		@Body(bodyValidationPipe) body:CreateAuctioneerBodySchema
 	){
 		const {
-			cep,city,email,name,neighborhood,number,phone,registrationCode,street,website
+			cep,city,email,name,neighborhood,number,phone,registrationCode,street,websites,state
 		} = body;
 
 		const result = await this.createAuctioneerUseCase.execute({
@@ -43,10 +44,11 @@ export class CreateAuctioneerController{
 			name,
 			neighborhood,
 			number,
-			phone,
+			phoneNumber:phone,
 			registrationCode,
+			state,
 			street,
-			website,
+			websites
 		});
 
 		if(result.isFailure()){

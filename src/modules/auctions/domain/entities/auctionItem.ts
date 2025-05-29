@@ -1,8 +1,8 @@
 import { z } from 'zod';
 import { Entity } from '../../../../core/shared/entity';
+import { GoodObject, GoodType } from '../factories/good';
 import { Real } from '../valueObjects/real';
 import { UniqueID } from '../valueObjects/uniqueId';
-import { GoodObject, GoodType } from './good';
 import { fullBuiltPropertySchema } from './realEstate/builtProperty';
 import { fullUnbuiltPropertySchema,} from './realEstate/unbuiltProperty';
 import { fullCarSchema } from './vehicle/car';
