@@ -1,5 +1,4 @@
 import z from 'zod';
-import { applyVehicleTransformsAndRefines } from '@/shared/vehicleSchema';
 import { UniqueID } from '../../valueObjects/uniqueId';
 import { baseVehicleInputSchema, Vehicle, VehicleDTO, VehicleProps } from './vehicle';
 
@@ -40,9 +39,8 @@ const carSpecificInputSchema = z.object({
 		.min(2, 'Car type must be at least 2 characters'), 
 });
 
-export const fullCarSchema = applyVehicleTransformsAndRefines( 
-	baseVehicleInputSchema.extend(carSpecificInputSchema.shape)
-);
+export const fullCarSchema = baseVehicleInputSchema.extend(carSpecificInputSchema.shape);
+
 
 export class Car extends Vehicle{
 

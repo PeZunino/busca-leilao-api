@@ -1,5 +1,4 @@
 import z from 'zod';
-import { applyVehicleTransformsAndRefines } from '@/shared/vehicleSchema';
 import { UniqueID } from '../../valueObjects/uniqueId';
 import { baseVehicleInputSchema, Vehicle, VehicleDTO, VehicleProps } from './vehicle';
 
@@ -9,9 +8,8 @@ export type MotorcycleDTO = VehicleDTO
 
 const motorcycleSpecificInputSchema = z.object({});
 
-export const fullMotorcycleSchema = applyVehicleTransformsAndRefines(
-	baseVehicleInputSchema.extend(motorcycleSpecificInputSchema.shape)
-);
+export const fullMotorcycleSchema = baseVehicleInputSchema.extend(motorcycleSpecificInputSchema.shape);
+
 
 export class Motorcycle extends Vehicle{
 	private constructor(protected readonly props: MotorcycleProps, id?: UniqueID) {
