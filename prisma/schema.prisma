@@ -36,25 +36,25 @@ model Committee{
   createdAt                   DateTime      @default(now()) @map("created_at")
   updatedAt                   DateTime?     @updatedAt @map("updated_at")
       
-  auction                     Auction[]
+  auction                     Auction?   
 }
 
 model Auction {
   @@map("auction")
-  id                          String         @id @default(uuid())
+  id                          String            @id @default(uuid())
 
-  publicationDate             DateTime       @map("publication_date")
-  createdAt                   DateTime       @default(now()) @map("created_at")
-  updatedAt                   DateTime?      @updatedAt @map("updated_at")
+  publicationDate             DateTime          @map("publication_date")
+  createdAt                   DateTime          @default(now()) @map("created_at")
+  updatedAt                   DateTime?         @updatedAt @map("updated_at")
 
   items                       AuctionItem[]
   openings                    AuctionOpening[]
 
-  auctioneerId                String         @map("auctioneer_id")
-  auctioneer                  Auctioneer @relation(fields: [auctioneerId], references: [id])
+  auctioneerId                String            @map("auctioneer_id")
+  auctioneer                  Auctioneer        @relation(fields: [auctioneerId], references: [id])
 
-  committeeId                 String         @map("committee_id")
-  committee                   Committee @relation(fields: [committeeId], references: [id])
+  committeeId                 String            @unique @map("committee_id")
+  committee                   Committee         @relation(fields: [committeeId], references: [id])
 }
 model AuctionOpening {
   @@map("auction_opening")
@@ -76,16 +76,26 @@ model AuctionItem{
   description                 String
   observation                 String?
   initialValue                Float      @map("initial_value")
+  debits                      Float
+  origin                      String
   createdAt                   DateTime   @default(now()) @map("created_at")
   updatedAt                   DateTime?  @updatedAt @map("updated_at")
 
-  car                         Car?     
-  motorcycle                  Motorcycle?
-  field                       Field?
-  realEstate                  RealEstate?   
-
   auctionId                   String     @map("auction_id")
   auction                     Auction    @relation(fields: [auctionId], references: [id])
+
+  car                         Car?         @relation(fields: [carId], references: [id])
+  carId                       String?      @map("car_id")
+  
+  motorcycle                  Motorcycle?  @relation(fields: [motorcycleId], references: [id])
+  motorcycleId                String?      @map("motorcycle_id")
+  
+  field                       Field?       @relation(fields: [fieldId], references: [id])
+  fieldId                     String?      @map("field_id")
+
+  realEstate                  RealEstate?  @relation(fields: [realEstateId], references: [id])
+  realEstateId                String?      @map("realEstate_id")
+
 }
 
 model Car{
@@ -105,19 +115,17 @@ model Car{
   yearModel                   Int            @map("year_model")
   forCirculation              Boolean        @map("for_circulation")
   fuel                        String
-  hasAirConditioning          Boolean       @map("has_air_conditioning")
-  steeringType                String        @map("steering_type")
-  hasSpareTire                Boolean       @map("has_spare_tire")
+  hasAirConditioning          Boolean        @map("has_air_conditioning")
+  steeringType                String         @map("steering_type")
+  hasSpareTire                Boolean        @map("has_spare_tire")
   gearbox                     String
-  hasArmor                    Boolean       @map("has_armor")
-  numberOfDoors               Int           @map("number_of_doors")
+  hasArmor                    Boolean        @map("has_armor")
+  numberOfDoors               Int            @map("number_of_doors")
   class                       String 
   createdAt                   DateTime       @default(now()) @map("created_at")
   updatedAt                   DateTime?      @updatedAt @map("updated_at")
         
-  auctionItemId               String         @unique @map("auction_item_id")
-  auctionItem                 AuctionItem    @relation(fields: [auctionItemId], references: [id])
-
+  AuctionItem AuctionItem[]
 }
 
 model Motorcycle{
@@ -140,8 +148,7 @@ model Motorcycle{
   createdAt                   DateTime       @default(now()) @map("created_at")
   updatedAt                   DateTime?      @updatedAt @map("updated_at")
     
-  auctionItemId               String         @unique @map("auction_item_id")
-  auctionItem                 AuctionItem    @relation(fields: [auctionItemId], references: [id])
+  AuctionItem AuctionItem[]
 }
 
 model Field{
@@ -171,8 +178,7 @@ model Field{
   createdAt                   DateTime       @default(now()) @map("created_at")
   updatedAt                   DateTime?      @updatedAt @map("updated_at")
 
-  auctionItemId               String         @unique @map("auction_item_id")
-  auctionItem                 AuctionItem    @relation(fields: [auctionItemId], references: [id])
+  AuctionItem AuctionItem[]
 }
 model RealEstate{
   @@map("real_estate")
@@ -201,6 +207,5 @@ model RealEstate{
   createdAt                   DateTime       @default(now()) @map("created_at")
   updatedAt                   DateTime?      @updatedAt @map("updated_at")
 
-  auctionItemId               String         @unique @map("auction_item_id")
-  auctionItem                 AuctionItem    @relation(fields: [auctionItemId], references: [id])
+  AuctionItem AuctionItem[]
 }
