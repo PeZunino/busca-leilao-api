@@ -12,6 +12,7 @@ interface AuctioneerProps{
 	email: Email
 	address:Address
 	websites: Website[]
+	uniqueHash: string
 	createdAt:Date;
 	updatedAt?:Date | null;
 }
@@ -66,6 +67,10 @@ export class Auctioneer extends AggregateRoot<AuctioneerProps>{
 
 	get name(): string {
 		return this.props.name;
+	}
+
+	get uniqueHash(){
+		return this.props.uniqueHash;
 	}
 
 	get registrationCode(): string {

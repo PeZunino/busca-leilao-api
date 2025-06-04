@@ -24,7 +24,8 @@ model Auctioneer {
   websites                    String[]
   createdAt                   DateTime      @default(now()) @map("created_at")
   updatedAt                   DateTime?     @updatedAt @map("updated_at")
-      
+  uniqueHash                  String        @unique @map("unique_hash")
+
   Auction                     Auction[]
 }
 
