@@ -18,5 +18,25 @@ export class InMemoryAuctioneerRepository implements AuctioneersRepository{
 		
 		return auctioneer;
 	}
+
+	async findByEmail(email: string): Promise<Auctioneer | null> {
+		const auctioneer = this.items.find(e=>e.email.address === email);
+		
+		if(!auctioneer){
+			return null; 
+		}
+		
+		return auctioneer;
+	}
+
+	async findByUniqueHash(hash: string): Promise<Auctioneer | null> {
+		const auctioneer = this.items.find(e=>e.uniqueHash === hash);
+		
+		if(!auctioneer){
+			return null; 
+		}
+		
+		return auctioneer;
+	}
   
 }

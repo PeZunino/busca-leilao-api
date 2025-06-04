@@ -9,19 +9,22 @@ import { Website } from '@/modules/auctions/domain/valueObjects/website';
 export class PrismaAuctioneerMapper{
 	static toDomain(raw:PrismaAuctioneer):Auctioneer{
 		return Auctioneer.create({
-			address: Address.create({
-				cep: raw.cep,
-				city: raw.city,
-				neighborhood: raw.neighborhood,
-				number: raw.number,
-				state: raw.state,
-				street: raw.street
+			address:Address.create({
+				cep:raw.cep,
+				city:raw.city,
+				neighborhood:raw.neighborhood,
+				number:raw.number,
+				state:raw.state,
+				street:raw.street,
 			}),
-			email: Email.create(raw.email),
-			name: raw.name,
-			phoneNumber: PhoneNumber.create(raw.phoneNumber),
-			registrationCode: raw.registrationCode,
-			websites: raw.websites.map(website=>Website.create(website))
+			createdAt:raw.createdAt,
+			email:Email.create(raw.email),
+			name:raw.name,
+			phoneNumber:PhoneNumber.create(raw.phoneNumber),
+			registrationCode:raw.registrationCode,
+			websites: raw.websites.map(site=>Website.create(site)) ,
+			updatedAt:raw.updatedAt,
+			uniqueHash: raw.uniqueHash
 		});
 	}
 	
@@ -38,7 +41,10 @@ export class PrismaAuctioneerMapper{
 			registrationCode: auctioneer.registrationCode,
 			state: auctioneer.address.state,
 			street: auctioneer.address.street,
-			websites: auctioneer.websites.map(website=>website.url.toString())
+			websites: auctioneer.websites.map(website=>website.url.toString()),
+			createdAt: auctioneer.createdAt,
+			updatedAt: auctioneer.updatedAt,
+			uniqueHash: auctioneer.uniqueHash
 		};
 	}
 }

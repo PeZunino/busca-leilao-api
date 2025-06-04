@@ -27,5 +27,25 @@ export class PrismaAuctioneersRepository implements AuctioneersRepository{
 		return PrismaAuctioneerMapper.toDomain(data);
 
 	}
+
+	async findByEmail(email: string): Promise<Auctioneer | null> {
+		const data = await this.prisma.auctioneer.findFirst({where:{email}});
+
+		if(!data){
+			return null;
+		}
+
+		return PrismaAuctioneerMapper.toDomain(data);
+	}
+
+	async findByUniqueHash(hash: string): Promise<Auctioneer | null> {
+		const data = await this.prisma.auctioneer.findUnique({where:{uniqueHash: hash}});
+
+		if(!data){
+			return null;
+		}
+
+		return PrismaAuctioneerMapper.toDomain(data);
+	}
   
 }

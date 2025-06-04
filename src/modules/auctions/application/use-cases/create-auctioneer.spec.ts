@@ -1,3 +1,4 @@
+import { FakeHasher } from 'test/cryptography/fake-hasher';
 import { MakeAuctioneer } from 'test/factories/make-auctioneer';
 import { InMemoryAuctioneerRepository } from 'test/repositories/in-memory-auctioneers-repository';
 import { CreateAuctioneerUseCase } from './create-auctioneer';
@@ -7,7 +8,9 @@ describe('Create Auctioneer',()=>{
 	it('should be able to create a auctioneer', async()=>{
 		const inMemoryAuctioneerRepository = new InMemoryAuctioneerRepository();
 
-		const sut = new CreateAuctioneerUseCase(inMemoryAuctioneerRepository);
+		const fakeHasher = new FakeHasher();
+
+		const sut = new CreateAuctioneerUseCase(fakeHasher,inMemoryAuctioneerRepository);
 
 		const makeAuctioneer = new MakeAuctioneer();
 		
