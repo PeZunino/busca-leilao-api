@@ -7,33 +7,18 @@ interface UnbuiltPropertyProps extends RealEstateProps {
 	hasWaterAccess: boolean;
 }
 
-export class UnbuiltProperty extends RealEstate {
+export class UnbuiltProperty extends RealEstate<UnbuiltPropertyProps> {
 	private constructor(protected readonly props: UnbuiltPropertyProps, id?: UniqueID) {
 		super(props, id);
 	}
 
-	public static create(input: UnbuiltPropertyProps, id?: UniqueID): UnbuiltProperty {
+	public static create(props: UnbuiltPropertyProps, id?: UniqueID): UnbuiltProperty {
 		try {
-			createRealEstateValidationSchema.parse(input);
+			createRealEstateValidationSchema.parse(props);
 
-			createUnbuiltPropertyValidationSchema.parse(input);
+			createUnbuiltPropertyValidationSchema.parse(props);
 
-			return new UnbuiltProperty({
-				address:input.address,
-				allowVisits:input.allowVisits,
-				builtArea:input.builtArea,
-				debits:input.debits,
-				fieldArea:input.fieldArea,
-				hasWaterAccess:input.hasWaterAccess,
-				isOccupied:input.isOccupied,
-				isUrban:input.isUrban,
-				lawsuit:input.lawsuit,
-				privateArea:input.privateArea,
-				registration:input.registration,
-				totalArea:input.totalArea,
-				complement:input.complement,
-				distanceToMetro:input.distanceToMetro
-			}, id);
+			return new UnbuiltProperty(props, id);
 		} catch (error: any) {
 			if (error instanceof z.ZodError) {
 				throw new Error(`Zod Unbuilt Property creation validation failed: ${error}`);

@@ -1,5 +1,5 @@
 import { Entity } from '../../../../core/shared/entity';
-import { CreateGoodDTO, GoodObject} from '../factories/good';
+import { GoodObject} from '../factories/good';
 import { Real } from '../valueObjects/real';
 import { UniqueID } from '../valueObjects/uniqueId';
 
@@ -11,30 +11,14 @@ interface AuctionItemProps{
 	initialValue: Real; 
 	debits:Real
 	good:GoodObject
-}
-
-export interface CreateAuctionItemDTO{
-	origin:string
-	startingBid: number; 
-	description: string;
-	observation?: string;
-	initialValue: number; 
-	debits:number;
-	good: CreateGoodDTO;  
+	updatedAt?:Date | null;
+	createdAt: Date
 }
 
 export class AuctionItem extends Entity<AuctionItemProps>{
 	public static create(props:AuctionItemProps, id?:UniqueID){
           
-		return new AuctionItem({
-			debits:props.debits,
-			startingBid: props.startingBid,
-			initialValue: props.initialValue,
-			description: props.description,
-			observation: props.observation,
-			origin: props.origin,
-			good:props.good,
-		}, id);
+		return new AuctionItem(props, id);
 
 	}
 
@@ -56,5 +40,11 @@ export class AuctionItem extends Entity<AuctionItemProps>{
 
 	get initialValue():Real{
 		return this.props.initialValue;
+	}
+	get createdAt(){
+		return this.props.createdAt;
+	}
+	get updatedAt(){
+		return this.props.updatedAt;
 	}
 }

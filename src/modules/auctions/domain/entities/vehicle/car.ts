@@ -14,38 +14,14 @@ interface CarProps extends VehicleProps {
 	type: string; 
 }
 
-export class Car extends Vehicle{
+export class Car extends Vehicle<CarProps>{
 
-	private constructor(protected readonly props: CarProps, id?: UniqueID) {
-		super(props, id);
-	}
-	
-	public static create(input: CarProps, id?: UniqueID): Car { 
+	public static create(props: CarProps, id?: UniqueID): Car { 
 		try {
 		
-			createCarValidationSchema.parse(input);
+			createCarValidationSchema.parse(props);
 
-			return new Car({
-				brand:input.brand,
-				color:input.color,
-				forCirculation:input.forCirculation,
-				fuel:input.fuel,
-				gearbox:input.gearbox,
-				hasAirConditioning:input.hasAirConditioning,
-				hasArmor:input.hasArmor,
-				hasKeys:input.hasKeys,
-				hasSpareTire:input.hasSpareTire,
-				licensePlate:input.licensePlate,
-				mileage:input.mileage,
-				model:input.model,
-				mount:input.mount,
-				numberOfDoors:input.numberOfDoors,
-				steeringType:input.steeringType,
-				type:input.type,
-				version:input.version,
-				year:input.year,
-				yearModel:input.yearModel
-			}, id);
+			return new Car(props, id);
 			
 		} catch (error: any) {
 			if (error instanceof z.ZodError) {

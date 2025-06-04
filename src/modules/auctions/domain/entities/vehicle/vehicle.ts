@@ -1,5 +1,4 @@
 import { Entity } from '../../../../../core/shared/entity';
-import { UniqueID } from '../../valueObjects/uniqueId';
 export interface VehicleProps{ 
 	mount: string;
 	mileage: number;
@@ -13,12 +12,11 @@ export interface VehicleProps{
 	yearModel: Date;
 	forCirculation: boolean;
 	fuel: string;
+	createdAt:Date;
+	updatedAt?:Date | null;
 }
 
-export abstract class Vehicle extends Entity<VehicleProps>{
-	protected constructor(protected readonly props: VehicleProps, id?: UniqueID) {
-		super(props, id);
-	}
+export abstract class Vehicle<Props> extends Entity<VehicleProps & Props>{
 
 	get category(){
 		return this.category;
@@ -58,5 +56,11 @@ export abstract class Vehicle extends Entity<VehicleProps>{
 	}
 	get fuel(){
 		return this.props.fuel;
+	}
+	get createdAt(){
+		return this.props.createdAt;
+	}
+	get updatedAt(){
+		return this.props.updatedAt;
 	}
 }

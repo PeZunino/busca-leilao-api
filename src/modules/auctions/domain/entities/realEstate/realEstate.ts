@@ -3,10 +3,6 @@ import { Entity } from '../../../../../core/shared/entity';
 import { Address } from '../../valueObjects/address';
 import { Area} from '../../valueObjects/area';
 import { Real } from '../../valueObjects/real';
-import { UniqueID } from '../../valueObjects/uniqueId';
-
-
-
 export interface RealEstateProps { 
 	isOccupied: boolean;
 	totalArea: Area;
@@ -22,10 +18,7 @@ export interface RealEstateProps {
 	distanceToMetro?: number;
 }
 
-export abstract class RealEstate extends Entity<RealEstateProps> { 
-	protected constructor(protected readonly props: RealEstateProps, id?: UniqueID) {
-		super(props, id); 
-	}
+export abstract class RealEstate<Props> extends Entity<RealEstateProps & Props> { 
 	
 	get category(){
 		return this.category;

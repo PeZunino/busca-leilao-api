@@ -5,22 +5,15 @@ import { PhoneNumber } from '../valueObjects/phone';
 import { UniqueID } from '../valueObjects/uniqueId';
 import { Website } from '../valueObjects/website';
 
-interface Props{
+interface AuctioneerProps{
 	name: string
 	registrationCode: string
 	phoneNumber: PhoneNumber
 	email: Email
-	websites: Website[]
 	address:Address
-}
-
-export interface AuctioneerInput{
-	name: string
-	registrationCode: string
-	phoneNumber: string
-	email: string
-	websites: string[]
-	address: AddressProps
+	websites: Website[]
+	createdAt:Date;
+	updatedAt?:Date | null;
 }
 
 interface AddressProps{
@@ -32,25 +25,10 @@ interface AddressProps{
 	state:string; 
 }
 
-export class Auctioneer extends AggregateRoot<Props>{
-	public static create(props:Props){
+export class Auctioneer extends AggregateRoot<AuctioneerProps>{
+	public static create(props:AuctioneerProps, id?: UniqueID){
 
-		return new Auctioneer({
-			address: props.address,
-			email:props.email,
-			name:props.name,
-			phoneNumber:props.phoneNumber,
-			registrationCode:props.registrationCode,
-			websites:props.websites
-		});
-	}
-
-	public equals(other: Auctioneer): boolean {
-		if (!(other instanceof Auctioneer)) {
-			return false;
-		}
-
-		return this.id.equals(other.id);
+		return new Auctioneer(props, id);
 	}
   
 	public setName(newName: string): void {
@@ -86,10 +64,6 @@ export class Auctioneer extends AggregateRoot<Props>{
 		}
 	}
 
-	get idValue(): UniqueID {
-		return this.id;
-	}
-
 	get name(): string {
 		return this.props.name;
 	}
@@ -106,14 +80,21 @@ export class Auctioneer extends AggregateRoot<Props>{
 		return this.props.email;
 	}
 
-	get websites(): readonly Website[] {
-		return [
-			...this.props.websites
-		];
+	get websites(): Website[] {
+		return this.props.websites;
+	
 	}
 
 	get address(): Address {
 		return this.props.address;
 	}
 
+	
+	get createdAt(){
+		return this.props.createdAt;
+	}
+
+	get updatedAt(){
+		return this.props.updatedAt;
+	}
 }

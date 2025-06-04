@@ -3,18 +3,28 @@ import { UniqueID } from '../valueObjects/uniqueId';
 
 interface Props{
 	name:string
+	createdAt:Date;
+	updatedAt?:Date | null;
 }
 
 export class Committee extends Entity<Props>{
 	public static create(props:Props, id?:UniqueID){
-		return new Committee({name:props.name},id);
+		return new Committee(props,id);
 	}
   
 	get name():string{
 		return this.props.name;
 	}
 
-	public setName(newName: string): void {
-		this.props.name = newName;
+	set name(name: string) {
+		this.props.name = name;
+	}
+	
+	get createdAt(){
+		return this.props.createdAt;
+	}
+
+	get updatedAt(){
+		return this.props.updatedAt;
 	}
 }
